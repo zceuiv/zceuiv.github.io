@@ -1,0 +1,467 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>一个数学题目 | Invoker&#39;s 鱼食罐</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Invoker">
+    
+
+    
+    <meta name="description" content="这个题目的描述是这样子的。用“数学公式”法解下题：有一个整数n,写一个函数f(n),返回0到n之间出现的”1”的个数。比如f(13)=6,现在f(1)=1,问下一个最大的f(n)=n的n是什么？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一个数学题目">
+<meta property="og:url" content="http://yoursite.com/2016/03/04/howManyOne/index.html">
+<meta property="og:site_name" content="Invoker's 鱼食罐">
+<meta property="og:description" content="这个题目的描述是这样子的。用“数学公式”法解下题：有一个整数n,写一个函数f(n),返回0到n之间出现的”1”的个数。比如f(13)=6,现在f(1)=1,问下一个最大的f(n)=n的n是什么？">
+<meta property="og:updated_time" content="2016-03-04T07:33:14.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="一个数学题目">
+<meta name="twitter:description" content="这个题目的描述是这样子的。用“数学公式”法解下题：有一个整数n,写一个函数f(n),返回0到n之间出现的”1”的个数。比如f(13)=6,现在f(1)=1,问下一个最大的f(n)=n的n是什么？">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon_bottle.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Invoker&#39;s 鱼食罐">Invoker&#39;s 鱼食罐</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/03/04/howManyOne/" title="一个数学题目" itemprop="url">一个数学题目</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
+		
+  <p class="article-time">
+    <time datetime="2016-03-04T06:48:42.000Z" itemprop="datePublished"> 發表於 2016-03-04</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目錄</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u5206_u4F4D_u6570_u8BA1_u7B97_u6CD5"><span class="toc-number">1.</span> <span class="toc-text">分位数计算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u66B4_u529B_u7EDF_u8BA1_u6CD5"><span class="toc-number">2.</span> <span class="toc-text">暴力统计法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u73B0_u5728_u8BA8_u8BBA_u4ED6_u4EEC_u7684_u65F6_u95F4_u6D88_u8017"><span class="toc-number">3.</span> <span class="toc-text">现在讨论他们的时间消耗</span></a></li></ol>
+		
+		</div>
+		
+		<p>这个题目的描述是这样子的。<br>用“数学公式”法解下题：<br>有一个整数n,写一个函数f(n),返回0到n之间出现的”1”的个数。<br>比如f(13)=6,现在f(1)=1,问下一个最大的f(n)=n的n是什么？<br><a id="more"></a></p>
+<p>这个题目有两种算法，一种是暴力统计法，一种是分位数计算法。</p>
+<h2 id="u5206_u4F4D_u6570_u8BA1_u7B97_u6CD5"><a href="#u5206_u4F4D_u6570_u8BA1_u7B97_u6CD5" class="headerlink" title="分位数计算法"></a>分位数计算法</h2><p>把数字n按位数拆分，统计每一个位数可能出现的1的个数，按照每一位为1，0，大于1来分别计算。</p>
+<p>例如n＝2103：<br>对于每个位的数来说，</p>
+<p><strong>如果大于1，则在这一位上所有出现1的情况为(该数字左边的数组成的数+1)乘以该位数对应的10幂数。</strong>如2103的个位数为3，在个位数上出现1的次数为(210+1)<em>1=211；2103的千位数1，则是(0+1)</em>1000=1000。</p>
+<p><strong>如果等于0，则在这一位上所有出现1的情况为该数字左边的数组成的数乘以该位数对应的10幂数。</strong>如2103十位数为0，在十位数上出现1的次数为21*10＝210。</p>
+<p><strong>如果小于0，则为左边的数乘以10幂数加上右边的数再加1。</strong>如2103的百位数1，在百位数上出现1的次数为2*100+3+1=204。</p>
+<p>所以所有小于等于2103的数出现1的次数为1625。</p>
+<p>代码如下：<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * 使用分位计数法计算小于等于一个数的所有数中1的和</span><br><span class="line"> **/</span></span><br><span class="line"><span class="keyword">func</span> sumFunc(number <span class="typename">int</span>) <span class="typename">int</span> &#123;</span><br><span class="line">	result := <span class="number">0</span></span><br><span class="line">	fac := <span class="number">1</span> <span class="comment">//10的幂数</span></span><br><span class="line">	<span class="keyword">for</span> number/fac &gt; <span class="number">0</span> &#123;</span><br><span class="line">		front := number / fac / <span class="number">10</span></span><br><span class="line">		this := number/fac - <span class="number">10</span>*front</span><br><span class="line">		bottom := number - number/fac*fac</span><br><span class="line"></span><br><span class="line">		<span class="keyword">switch</span> &#123;</span><br><span class="line">		<span class="keyword">case</span> this &gt; <span class="number">1</span>:</span><br><span class="line">			result += (front + <span class="number">1</span>) * fac</span><br><span class="line">		<span class="keyword">case</span> this == <span class="number">0</span>:</span><br><span class="line">			result += front * fac</span><br><span class="line">		<span class="keyword">case</span> this == <span class="number">1</span>:</span><br><span class="line">			result += front*fac + bottom + <span class="number">1</span></span><br><span class="line">		<span class="keyword">default</span>:</span><br><span class="line">			fmt.Println(<span class="string">"err"</span>)</span><br><span class="line">			<span class="keyword">return</span> -<span class="number">1</span></span><br><span class="line">		&#125;</span><br><span class="line">		fac *= <span class="number">10</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="u66B4_u529B_u7EDF_u8BA1_u6CD5"><a href="#u66B4_u529B_u7EDF_u8BA1_u6CD5" class="headerlink" title="暴力统计法"></a>暴力统计法</h2><p>很简单对每一个小于n的数都统计1的个数，再累加。不过这里注意，如果要求单个数的f(n)，那么复杂度为O(n<em>ln(n))；如果像题目一样要求小于等于n的每一个数的f(n)，复杂度同样为O(n</em>ln(n))。</p>
+<p>代码如下：<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span><br><span class="line"> * 对小于等于一个数字的所有数字，求‘1’的个数和</span><br><span class="line"> **/</span></span><br><span class="line"><span class="keyword">func</span> getOneFromAllNumberLower(number <span class="typename">int</span>) <span class="typename">int</span> &#123;</span><br><span class="line">	<span class="keyword">var</span> ret <span class="typename">int</span></span><br><span class="line">	<span class="keyword">if</span> number &lt; <span class="number">0</span> &#123;</span><br><span class="line">		ret = -<span class="number">1</span></span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> number == <span class="number">0</span> &#123;</span><br><span class="line">		ret = <span class="number">0</span></span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		ret += getOneFromOneNumber(number)</span><br><span class="line">		ret += getOneFromAllNumberLower(number - <span class="number">1</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ret</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * 对一个数字里面有多少个‘1’</span><br><span class="line"> * 使用了递归调用</span><br><span class="line"> **/</span></span><br><span class="line"><span class="keyword">func</span> getOneFromOneNumber(number <span class="typename">int</span>) <span class="typename">int</span> &#123;</span><br><span class="line">	ret := <span class="number">0</span></span><br><span class="line">	<span class="keyword">if</span> number%<span class="number">10</span> == <span class="number">1</span> &#123;</span><br><span class="line">		ret += <span class="number">1</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> number &gt; <span class="number">9</span> &#123;</span><br><span class="line">		ret += getOneFromOneNumber(number / <span class="number">10</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ret</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> main()&#123;</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt;= <span class="number">123456789</span>; i++ &#123;</span><br><span class="line">		result := sumFunc(i)</span><br><span class="line">		<span class="keyword">if</span> result == i &#123;</span><br><span class="line">			fmt.Printf(<span class="string">"right: %d\n"</span>, result)</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">//fmt.Printf("wrong: %d, %d\n", i, result)</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="u73B0_u5728_u8BA8_u8BBA_u4ED6_u4EEC_u7684_u65F6_u95F4_u6D88_u8017"><a href="#u73B0_u5728_u8BA8_u8BBA_u4ED6_u4EEC_u7684_u65F6_u95F4_u6D88_u8017" class="headerlink" title="现在讨论他们的时间消耗"></a>现在讨论他们的时间消耗</h2><p>两种算法的复杂度应均为O(n*ln(n))，但是结果的时间差异比较大。程序都从0到123456789之中找到所有满足f(n)==n的n值，结果分位计数法用了41.97秒，暴力统计法用了5.04秒。我的环境是2.7GHZ酷睿i5处理器，8g内存，Mac OSX 10.10.4操作系统，go1.6beta1 编译环境。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/blog/">blog</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Go/">Go</a><a href="/tags/算法/">算法</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/03/04/howManyOne/" data-title="一个数学题目 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/03/04/introduction/"  title="对付拖延症，最好的方法就是开始去做">
+ <strong>下一篇：</strong><br/> 
+ <span>对付拖延症，最好的方法就是开始去做
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目錄</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u5206_u4F4D_u6570_u8BA1_u7B97_u6CD5"><span class="toc-number">1.</span> <span class="toc-text">分位数计算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u66B4_u529B_u7EDF_u8BA1_u6CD5"><span class="toc-number">2.</span> <span class="toc-text">暴力统计法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u73B0_u5728_u8BA8_u8BBA_u4ED6_u4EEC_u7684_u65F6_u95F4_u6D88_u8017"><span class="toc-number">3.</span> <span class="toc-text">现在讨论他们的时间消耗</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分類</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/blog/" title="blog">blog<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">標簽</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/杂谈/" title="杂谈">杂谈<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Go/" title="Go">Go<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情鏈接</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 訂閱</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Welcome to my page. <br/>
+			This is the place I feed myself. Enjoy it!</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="Invoker">Invoker</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回頂部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
