@@ -4,23 +4,23 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>使用golang遇到的疑难 | Invoker&#39;s 鱼食罐</title>
+    <title>使用golang遇到的零碎问题 | Invoker&#39;s 鱼食罐</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Invoker">
     
 
     
-    <meta name="description" content="本篇纪录我在使用golang中遇到的疑难和解决办法。">
+    <meta name="description" content="本篇纪录我在使用golang中遇到的疑难和解决办法以及一些体会。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用golang遇到的疑难">
-<meta property="og:url" content="http://yoursite.com/2016/03/11/golang-problems/index.html">
+<meta property="og:title" content="使用golang遇到的零碎问题">
+<meta property="og:url" content="http://yoursite.com/2016/03/11/golang-experience/index.html">
 <meta property="og:site_name" content="Invoker's 鱼食罐">
-<meta property="og:description" content="本篇纪录我在使用golang中遇到的疑难和解决办法。">
-<meta property="og:updated_time" content="2016-03-11T02:52:06.000Z">
+<meta property="og:description" content="本篇纪录我在使用golang中遇到的疑难和解决办法以及一些体会。">
+<meta property="og:updated_time" content="2016-03-11T10:20:51.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用golang遇到的疑难">
-<meta name="twitter:description" content="本篇纪录我在使用golang中遇到的疑难和解决办法。">
+<meta name="twitter:title" content="使用golang遇到的零碎问题">
+<meta name="twitter:description" content="本篇纪录我在使用golang中遇到的疑难和解决办法以及一些体会。">
 
     
     <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
@@ -76,7 +76,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/03/11/golang-problems/" title="使用golang遇到的疑难" itemprop="url">使用golang遇到的疑难</a>
+      <a href="/2016/03/11/golang-experience/" title="使用golang遇到的零碎问题" itemprop="url">使用golang遇到的零碎问题</a>
   </h1>
   <p class="article-author">By
        
@@ -92,17 +92,21 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u65E0_u6CD5go_get_u5305_u7684_u95EE_u9898"><span class="toc-number">1.</span> <span class="toc-text">无法go get包的问题</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u65E0_u6CD5go_get_u5305_u7684_u95EE_u9898"><span class="toc-number">1.</span> <span class="toc-text">无法go get包的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u6709_u5173interface"><span class="toc-number">2.</span> <span class="toc-text">有关interface</span></a></li></ol>
 		
 		</div>
 		
-		<p>本篇纪录我在使用golang中遇到的疑难和解决办法。<br><a id="more"></a></p>
+		<p>本篇纪录我在使用golang中遇到的疑难和解决办法以及一些体会。<br><a id="more"></a></p>
 <h2 id="u65E0_u6CD5go_get_u5305_u7684_u95EE_u9898"><a href="#u65E0_u6CD5go_get_u5305_u7684_u95EE_u9898" class="headerlink" title="无法go get包的问题"></a>无法go get包的问题</h2><p><strong>现象：</strong><br>在使用go get命令获取包时无法获取。<br>执行如下命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get gopkg.in/pg.v4</span><br></pre></td></tr></table></figure></p>
 <p>会提示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># cd .; git clone https://gopkg.in/pg.v4 /Users/zceuiv/Projects/Go/src/gopkg.in/pg.v4</span></span><br><span class="line">fatal: could not create work tree dir <span class="string">'/Users/zceuiv/Projects/Go/src/gopkg.in/pg.v4'</span>: Permission denied</span><br><span class="line">package gopkg.in/pg.v2: <span class="built_in">exit</span> status <span class="number">128</span></span><br></pre></td></tr></table></figure></p>
 <p>然后执行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo go get gopkg.in/pg.v4</span><br></pre></td></tr></table></figure></p>
 <p>会提示<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">package gopkg.in/pg.v4: cannot download, <span class="variable">$GOPATH</span> not set. For more details see: go <span class="built_in">help</span> gopath</span><br></pre></td></tr></table></figure></p>
 <p><strong>环境：</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">GOARCH=<span class="string">"amd64"</span></span><br><span class="line">GOBIN=<span class="string">"/Users/zceuiv/Projects/Go/bin"</span></span><br><span class="line">GOEXE=<span class="string">""</span></span><br><span class="line">GOHOSTARCH=<span class="string">"amd64"</span></span><br><span class="line">GOHOSTOS=<span class="string">"darwin"</span></span><br><span class="line">GOOS=<span class="string">"darwin"</span></span><br><span class="line">GOPATH=<span class="string">"/Users/zceuiv/Projects/Go"</span></span><br><span class="line">GORACE=<span class="string">""</span></span><br><span class="line">GOROOT=<span class="string">"/usr/local/go"</span></span><br><span class="line">GOTOOLDIR=<span class="string">"/usr/local/go/pkg/tool/darwin_amd64"</span></span><br></pre></td></tr></table></figure></p>
 <p><strong>解决方案：</strong><br>执行如下命令<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo env GOPATH=<span class="string">'/Users/zceuiv/Projects/Go'</span> go get gopkg.in/pg.v4</span><br></pre></td></tr></table></figure></p>
+<h2 id="u6709_u5173interface"><a href="#u6709_u5173interface" class="headerlink" title="有关interface"></a>有关interface</h2><p>使用interface时发现，可以在一个包里定义一个interface，然后在另一个包中实现该interface，同时不导出实现该interface的struct，从而达到private的作用。</p>
+<p>例子如下：<br><figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> configure</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"gopkg.in/pg.v4"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * 该struct要实现main包中的Config接口</span><br><span class="line"> **/</span></span><br><span class="line"><span class="keyword">type</span> configPropertiies <span class="keyword">struct</span> &#123;</span><br><span class="line">	... <span class="comment">// 定义略</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * configProperties的构造函数</span><br><span class="line"> **/</span></span><br><span class="line"><span class="keyword">func</span> Config() (config *configPropertiies) &#123;</span><br><span class="line">	config = <span class="built_in">new</span>(configPropertiies)</span><br><span class="line"></span><br><span class="line">	... <span class="comment">// 实现略</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> config</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> (config *configPropertiies) Initialize(pgOption *pg.Options, server *http.Server) &#123;</span><br><span class="line">	... <span class="comment">// 实现略</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"gopkg.in/pg.v4"</span></span><br><span class="line">	<span class="string">"gostgreSQL/configure"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span><br><span class="line"> * 初始化pg.Options和http.Server</span><br><span class="line"> **/</span></span><br><span class="line"><span class="keyword">type</span> Config <span class="keyword">interface</span> &#123;</span><br><span class="line">	Initialize(pgOption *pg.Options, server *http.Server)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> init() &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> main() &#123;</span><br><span class="line">	<span class="keyword">var</span> config Config</span><br><span class="line">	pgOption := <span class="built_in">new</span>(pg.Options)</span><br><span class="line">	server := <span class="built_in">new</span>(http.Server)</span><br><span class="line">	config = configure.Config()</span><br><span class="line">	<span class="keyword">if</span> config == <span class="constant">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	config.Initialize(pgOption, server)</span><br><span class="line">	fmt.Println(server.Addr)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>另外，关于interface还发现，一个interface的变量可以被直接赋值为实现了它的结构实例的指针（如果用interface的指针类型反而会报错）。如上例代码main函数中的<code>config = configure.Config()</code>。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -125,7 +129,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2016/03/11/golang-problems/" data-title="使用golang遇到的疑难 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2016/03/11/golang-experience/" data-title="使用golang遇到的零碎问题 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -157,7 +161,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u65E0_u6CD5go_get_u5305_u7684_u95EE_u9898"><span class="toc-number">1.</span> <span class="toc-text">无法go get包的问题</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u65E0_u6CD5go_get_u5305_u7684_u95EE_u9898"><span class="toc-number">1.</span> <span class="toc-text">无法go get包的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u6709_u5173interface"><span class="toc-number">2.</span> <span class="toc-text">有关interface</span></a></li></ol>
  
   </div>
 
