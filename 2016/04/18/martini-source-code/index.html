@@ -4,53 +4,26 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>martini框架源码解剖 | Invoker&#39;s 鱼食罐</title>
+    <title>Martini框架源码解剖 | Invoker&#39;s 鱼食罐</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Invoker">
     
 
     
-    <meta name="description" content="env.go:const(Dev  string
-Prod string
-Test string
-)
-环境常量
-var(Root string
-Env  string
-)
-运行根目录，环境变量，默认为Dev
-init()初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。
-logger.go:func Log">
+    <meta name="description" content="介绍Martini框架是github上用Go语言开发的排名第一的Web框架。源码只有一千多行，只引用了一个第三方包，这个包是一个注入工具，实现更是只有百行左右。如此简洁的实现和强大的功能使得它在github上当然地收到了追捧。
+本文试图挨个解剖每个代码文件中的源码，以深入理解其实现方式。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="martini框架源码解剖">
+<meta property="og:title" content="Martini框架源码解剖">
 <meta property="og:url" content="http://yoursite.com/2016/04/18/martini-source-code/index.html">
 <meta property="og:site_name" content="Invoker's 鱼食罐">
-<meta property="og:description" content="env.go:const(Dev  string
-Prod string
-Test string
-)
-环境常量
-var(Root string
-Env  string
-)
-运行根目录，环境变量，默认为Dev
-init()初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。
-logger.go:func Log">
-<meta property="og:updated_time" content="2016-04-19T07:49:05.000Z">
+<meta property="og:description" content="介绍Martini框架是github上用Go语言开发的排名第一的Web框架。源码只有一千多行，只引用了一个第三方包，这个包是一个注入工具，实现更是只有百行左右。如此简洁的实现和强大的功能使得它在github上当然地收到了追捧。
+本文试图挨个解剖每个代码文件中的源码，以深入理解其实现方式。">
+<meta property="og:updated_time" content="2016-04-19T08:54:14.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="martini框架源码解剖">
-<meta name="twitter:description" content="env.go:const(Dev  string
-Prod string
-Test string
-)
-环境常量
-var(Root string
-Env  string
-)
-运行根目录，环境变量，默认为Dev
-init()初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。
-logger.go:func Log">
+<meta name="twitter:title" content="Martini框架源码解剖">
+<meta name="twitter:description" content="介绍Martini框架是github上用Go语言开发的排名第一的Web框架。源码只有一千多行，只引用了一个第三方包，这个包是一个注入工具，实现更是只有百行左右。如此简洁的实现和强大的功能使得它在github上当然地收到了追捧。
+本文试图挨个解剖每个代码文件中的源码，以深入理解其实现方式。">
 
     
     <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
@@ -106,7 +79,7 @@ logger.go:func Log">
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/04/18/martini-source-code/" title="martini框架源码解剖" itemprop="url">martini框架源码解剖</a>
+      <a href="/2016/04/18/martini-source-code/" title="Martini框架源码解剖" itemprop="url">Martini框架源码解剖</a>
   </h1>
   <p class="article-author">By
        
@@ -122,11 +95,13 @@ logger.go:func Log">
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#env-go_3A"><span class="toc-number">1.</span> <span class="toc-text">env.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#const_28"><span class="toc-number">1.1.</span> <span class="toc-text">const(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#var_28"><span class="toc-number">1.2.</span> <span class="toc-text">var(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init_28_29"><span class="toc-number">1.3.</span> <span class="toc-text">init()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logger-go_3A"><span class="toc-number">2.</span> <span class="toc-text">logger.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Logger_28_29_Handler"><span class="toc-number">2.1.</span> <span class="toc-text">func Logger() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#recovery-go_3A"><span class="toc-number">3.</span> <span class="toc-text">recovery.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Recovery_28_29_Handler"><span class="toc-number">3.1.</span> <span class="toc-text">func Recovery() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#response_writer-go"><span class="toc-number">4.</span> <span class="toc-text">response_writer.go</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ResponseWriter_interface_7B"><span class="toc-number">4.1.</span> <span class="toc-text">type ResponseWriter interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_BeforeFunc_func_28ResponseWriter_29"><span class="toc-number">4.2.</span> <span class="toc-text">type BeforeFunc func(ResponseWriter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><span class="toc-number">4.3.</span> <span class="toc-text">func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><span class="toc-number">4.4.</span> <span class="toc-text">func (rw *responseWriter) WriteHeader(s int)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><span class="toc-number">4.5.</span> <span class="toc-text">func (rw *responseWriter) Before(before BeforeFunc)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#return_handle-go_3A"><span class="toc-number">5.</span> <span class="toc-text">return_handle.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><span class="toc-number">5.1.</span> <span class="toc-text">type ReturnHandler func(Context, []reflect.Value)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#martini-go_3A"><span class="toc-number">6.</span> <span class="toc-text">martini.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Martini_struct__7B"><span class="toc-number">6.1.</span> <span class="toc-text">type Martini struct {</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Handler_interface_7B_7D"><span class="toc-number">6.2.</span> <span class="toc-text">type Handler interface{}</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Context_interface_7B"><span class="toc-number">6.3.</span> <span class="toc-text">type Context interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_New_28_29_*Martini"><span class="toc-number">6.4.</span> <span class="toc-text">func New() *Martini</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><span class="toc-number">6.5.</span> <span class="toc-text">func (m *Martini) Handlers(handlers …Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Use_28handler_Handler_29"><span class="toc-number">6.6.</span> <span class="toc-text">func (m *Martini) Use(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Action_28handler_Handler_29"><span class="toc-number">6.7.</span> <span class="toc-text">func (m *Martini) Action(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_Logger_28logger_log-Logger_29"><span class="toc-number">6.8.</span> <span class="toc-text">func (m Martini) Logger(logger log.Logger)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><span class="toc-number">6.9.</span> <span class="toc-text">func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28c_*context_29_Next_28_29"><span class="toc-number">6.10.</span> <span class="toc-text">func (c *context) Next()</span></a></li></ol></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#env-go_3A"><span class="toc-number">2.</span> <span class="toc-text">env.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#const_28"><span class="toc-number">2.1.</span> <span class="toc-text">const(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#var_28"><span class="toc-number">2.2.</span> <span class="toc-text">var(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init_28_29"><span class="toc-number">2.3.</span> <span class="toc-text">init()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logger-go_3A"><span class="toc-number">3.</span> <span class="toc-text">logger.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Logger_28_29_Handler"><span class="toc-number">3.1.</span> <span class="toc-text">func Logger() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#recovery-go_3A"><span class="toc-number">4.</span> <span class="toc-text">recovery.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Recovery_28_29_Handler"><span class="toc-number">4.1.</span> <span class="toc-text">func Recovery() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#response_writer-go"><span class="toc-number">5.</span> <span class="toc-text">response_writer.go</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ResponseWriter_interface_7B"><span class="toc-number">5.1.</span> <span class="toc-text">type ResponseWriter interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_BeforeFunc_func_28ResponseWriter_29"><span class="toc-number">5.2.</span> <span class="toc-text">type BeforeFunc func(ResponseWriter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><span class="toc-number">5.3.</span> <span class="toc-text">func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><span class="toc-number">5.4.</span> <span class="toc-text">func (rw *responseWriter) WriteHeader(s int)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><span class="toc-number">5.5.</span> <span class="toc-text">func (rw *responseWriter) Before(before BeforeFunc)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#return_handle-go_3A"><span class="toc-number">6.</span> <span class="toc-text">return_handle.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><span class="toc-number">6.1.</span> <span class="toc-text">type ReturnHandler func(Context, []reflect.Value)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#martini-go_3A"><span class="toc-number">7.</span> <span class="toc-text">martini.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Martini_struct__7B"><span class="toc-number">7.1.</span> <span class="toc-text">type Martini struct {</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Handler_interface_7B_7D"><span class="toc-number">7.2.</span> <span class="toc-text">type Handler interface{}</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Context_interface_7B"><span class="toc-number">7.3.</span> <span class="toc-text">type Context interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_New_28_29_*Martini"><span class="toc-number">7.4.</span> <span class="toc-text">func New() *Martini</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><span class="toc-number">7.5.</span> <span class="toc-text">func (m *Martini) Handlers(handlers …Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Use_28handler_Handler_29"><span class="toc-number">7.6.</span> <span class="toc-text">func (m *Martini) Use(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Action_28handler_Handler_29"><span class="toc-number">7.7.</span> <span class="toc-text">func (m *Martini) Action(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_Logger_28logger_log-Logger_29"><span class="toc-number">7.8.</span> <span class="toc-text">func (m Martini) Logger(logger log.Logger)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><span class="toc-number">7.9.</span> <span class="toc-text">func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28c_*context_29_Next_28_29"><span class="toc-number">7.10.</span> <span class="toc-text">func (c *context) Next()</span></a></li></ol></li></ol>
 		
 		</div>
 		
-		<h2 id="env-go_3A"><a href="#env-go_3A" class="headerlink" title="env.go:"></a>env.go:</h2><h3 id="const_28"><a href="#const_28" class="headerlink" title="const("></a>const(</h3><pre><code>Dev  string
+		<h2 id="u4ECB_u7ECD"><a href="#u4ECB_u7ECD" class="headerlink" title="介绍"></a>介绍</h2><p>Martini框架是github上用Go语言开发的排名第一的Web框架。源码只有一千多行，只引用了一个第三方包，这个包是一个注入工具，实现更是只有百行左右。如此简洁的实现和强大的功能使得它在github上当然地收到了追捧。</p>
+<p>本文试图挨个解剖每个代码文件中的源码，以深入理解其实现方式。<br><a id="more"></a></p>
+<h2 id="env-go_3A"><a href="#env-go_3A" class="headerlink" title="env.go:"></a>env.go:</h2><h3 id="const_28"><a href="#const_28" class="headerlink" title="const("></a>const(</h3><pre><code>Dev  string
 Prod string
 Test string
 </code></pre><p>)</p>
@@ -175,6 +150,16 @@ Written() bool
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
 
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/blog/">blog</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/Go/">Go</a><a href="/tags/Web/">Web</a>
+  </div>
 
 </div>
 
@@ -182,7 +167,7 @@ Written() bool
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2016/04/18/martini-source-code/" data-title="martini框架源码解剖 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2016/04/18/martini-source-code/" data-title="Martini框架源码解剖 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -195,6 +180,14 @@ Written() bool
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2016/04/19/storage-research-of-PandoCloud/" title="对PandoCloud的数据存储的研究">
+  <strong>上一篇：</strong><br/>
+  <span>
+  对PandoCloud的数据存储的研究</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2016/03/15/programming-experience/"  title="一些点滴记录">
@@ -214,7 +207,7 @@ Written() bool
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#env-go_3A"><span class="toc-number">1.</span> <span class="toc-text">env.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#const_28"><span class="toc-number">1.1.</span> <span class="toc-text">const(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#var_28"><span class="toc-number">1.2.</span> <span class="toc-text">var(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init_28_29"><span class="toc-number">1.3.</span> <span class="toc-text">init()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logger-go_3A"><span class="toc-number">2.</span> <span class="toc-text">logger.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Logger_28_29_Handler"><span class="toc-number">2.1.</span> <span class="toc-text">func Logger() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#recovery-go_3A"><span class="toc-number">3.</span> <span class="toc-text">recovery.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Recovery_28_29_Handler"><span class="toc-number">3.1.</span> <span class="toc-text">func Recovery() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#response_writer-go"><span class="toc-number">4.</span> <span class="toc-text">response_writer.go</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ResponseWriter_interface_7B"><span class="toc-number">4.1.</span> <span class="toc-text">type ResponseWriter interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_BeforeFunc_func_28ResponseWriter_29"><span class="toc-number">4.2.</span> <span class="toc-text">type BeforeFunc func(ResponseWriter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><span class="toc-number">4.3.</span> <span class="toc-text">func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><span class="toc-number">4.4.</span> <span class="toc-text">func (rw *responseWriter) WriteHeader(s int)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><span class="toc-number">4.5.</span> <span class="toc-text">func (rw *responseWriter) Before(before BeforeFunc)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#return_handle-go_3A"><span class="toc-number">5.</span> <span class="toc-text">return_handle.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><span class="toc-number">5.1.</span> <span class="toc-text">type ReturnHandler func(Context, []reflect.Value)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#martini-go_3A"><span class="toc-number">6.</span> <span class="toc-text">martini.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Martini_struct__7B"><span class="toc-number">6.1.</span> <span class="toc-text">type Martini struct {</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Handler_interface_7B_7D"><span class="toc-number">6.2.</span> <span class="toc-text">type Handler interface{}</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Context_interface_7B"><span class="toc-number">6.3.</span> <span class="toc-text">type Context interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_New_28_29_*Martini"><span class="toc-number">6.4.</span> <span class="toc-text">func New() *Martini</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><span class="toc-number">6.5.</span> <span class="toc-text">func (m *Martini) Handlers(handlers …Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Use_28handler_Handler_29"><span class="toc-number">6.6.</span> <span class="toc-text">func (m *Martini) Use(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Action_28handler_Handler_29"><span class="toc-number">6.7.</span> <span class="toc-text">func (m *Martini) Action(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_Logger_28logger_log-Logger_29"><span class="toc-number">6.8.</span> <span class="toc-text">func (m Martini) Logger(logger log.Logger)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><span class="toc-number">6.9.</span> <span class="toc-text">func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28c_*context_29_Next_28_29"><span class="toc-number">6.10.</span> <span class="toc-text">func (c *context) Next()</span></a></li></ol></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#env-go_3A"><span class="toc-number">2.</span> <span class="toc-text">env.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#const_28"><span class="toc-number">2.1.</span> <span class="toc-text">const(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#var_28"><span class="toc-number">2.2.</span> <span class="toc-text">var(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init_28_29"><span class="toc-number">2.3.</span> <span class="toc-text">init()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logger-go_3A"><span class="toc-number">3.</span> <span class="toc-text">logger.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Logger_28_29_Handler"><span class="toc-number">3.1.</span> <span class="toc-text">func Logger() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#recovery-go_3A"><span class="toc-number">4.</span> <span class="toc-text">recovery.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Recovery_28_29_Handler"><span class="toc-number">4.1.</span> <span class="toc-text">func Recovery() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#response_writer-go"><span class="toc-number">5.</span> <span class="toc-text">response_writer.go</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ResponseWriter_interface_7B"><span class="toc-number">5.1.</span> <span class="toc-text">type ResponseWriter interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_BeforeFunc_func_28ResponseWriter_29"><span class="toc-number">5.2.</span> <span class="toc-text">type BeforeFunc func(ResponseWriter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><span class="toc-number">5.3.</span> <span class="toc-text">func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><span class="toc-number">5.4.</span> <span class="toc-text">func (rw *responseWriter) WriteHeader(s int)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><span class="toc-number">5.5.</span> <span class="toc-text">func (rw *responseWriter) Before(before BeforeFunc)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#return_handle-go_3A"><span class="toc-number">6.</span> <span class="toc-text">return_handle.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><span class="toc-number">6.1.</span> <span class="toc-text">type ReturnHandler func(Context, []reflect.Value)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#martini-go_3A"><span class="toc-number">7.</span> <span class="toc-text">martini.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Martini_struct__7B"><span class="toc-number">7.1.</span> <span class="toc-text">type Martini struct {</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Handler_interface_7B_7D"><span class="toc-number">7.2.</span> <span class="toc-text">type Handler interface{}</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Context_interface_7B"><span class="toc-number">7.3.</span> <span class="toc-text">type Context interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_New_28_29_*Martini"><span class="toc-number">7.4.</span> <span class="toc-text">func New() *Martini</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><span class="toc-number">7.5.</span> <span class="toc-text">func (m *Martini) Handlers(handlers …Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Use_28handler_Handler_29"><span class="toc-number">7.6.</span> <span class="toc-text">func (m *Martini) Use(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Action_28handler_Handler_29"><span class="toc-number">7.7.</span> <span class="toc-text">func (m *Martini) Action(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_Logger_28logger_log-Logger_29"><span class="toc-number">7.8.</span> <span class="toc-text">func (m Martini) Logger(logger log.Logger)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><span class="toc-number">7.9.</span> <span class="toc-text">func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28c_*context_29_Next_28_29"><span class="toc-number">7.10.</span> <span class="toc-text">func (c *context) Next()</span></a></li></ol></li></ol>
  
   </div>
 
@@ -231,7 +224,7 @@ Written() bool
 		<ul>
 		
 		  
-			<li><a href="/categories/blog/" title="blog">blog<sup>2</sup></a></li>
+			<li><a href="/categories/blog/" title="blog">blog<sup>4</sup></a></li>
 		  
 		
 		  
@@ -248,11 +241,11 @@ Written() bool
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Go/" title="Go">Go<sup>2</sup></a></li>
+				<li><a href="/tags/Go/" title="Go">Go<sup>4</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/Web/" title="Web">Web<sup>1</sup></a></li>
+				<li><a href="/tags/Web/" title="Web">Web<sup>2</sup></a></li>
 			
 		
 			
@@ -261,6 +254,10 @@ Written() bool
 		
 			
 				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Database/" title="Database">Database<sup>1</sup></a></li>
 			
 		
 		</ul>
