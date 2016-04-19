@@ -77,6 +77,99 @@
         <header class="article-info clearfix">
   <h1 itemprop="name">
     
+      <a href="/2016/04/18/martini-source-code/" title="martini框架源码解剖" itemprop="url">martini框架源码解剖</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
+		
+  <p class="article-time">
+    <time datetime="2016-04-18T02:42:49.000Z" itemprop="datePublished"> 發表於 2016-04-18</time>
+    
+  </p>
+</header>
+    <div class="article-content">
+        
+        <h2 id="env-go_3A"><a href="#env-go_3A" class="headerlink" title="env.go:"></a>env.go:</h2><h3 id="const_28"><a href="#const_28" class="headerlink" title="const("></a>const(</h3><pre><code>Dev  string
+Prod string
+Test string
+</code></pre><p>)</p>
+<p>环境常量</p>
+<h3 id="var_28"><a href="#var_28" class="headerlink" title="var("></a>var(</h3><pre><code>Root string
+Env  string
+</code></pre><p>)</p>
+<p>运行根目录，环境变量，默认为Dev</p>
+<h3 id="init_28_29"><a href="#init_28_29" class="headerlink" title="init()"></a>init()</h3><p>初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。</p>
+<h2 id="logger-go_3A"><a href="#logger-go_3A" class="headerlink" title="logger.go:"></a>logger.go:</h2><h3 id="func_Logger_28_29_Handler"><a href="#func_Logger_28_29_Handler" class="headerlink" title="func Logger() Handler"></a>func Logger() Handler</h3><p>返回一个闭包，类型为func(res http.ResponseWriter, req <em>http.Request, c Context, log </em>log.logger)。该闭包作为一个中间件handler，用以log来的req和走的res。<br>闭包首先通过http.header获取req的的远程地址，然后纪录该远程地址访问的URL、使用的Method，最后纪录res的状态，req到res的耗时。</p>
+<h2 id="recovery-go_3A"><a href="#recovery-go_3A" class="headerlink" title="recovery.go:"></a>recovery.go:</h2><h3 id="func_Recovery_28_29_Handler"><a href="#func_Recovery_28_29_Handler" class="headerlink" title="func Recovery() Handler"></a>func Recovery() Handler</h3><p>返回一个闭包，类型为func(c Context, log *log.Logger)。从500状态或者panic状态恢复，如果是Dev模式则会输出panic页面。<br>闭包defer用recover方法捕获异常，然后用context.Next()方法继续执行req和res处理。捕获到异常以后，用继承自Injector的Get方法获取context当前的res，然后控制res根据运行模式的不同输出错误页面。</p>
+<h2 id="response_writer-go"><a href="#response_writer-go" class="headerlink" title="response_writer.go"></a>response_writer.go</h2><h3 id="type_ResponseWriter_interface_7B"><a href="#type_ResponseWriter_interface_7B" class="headerlink" title="type ResponseWriter interface{"></a>type ResponseWriter interface{</h3><pre><code>http.ResponseWriter
+http.Flusher
+http.Hijacker
+Status()  int
+Written() bool
+Size()    int
+Before(BeforeFunc)
+</code></pre><p>}</p>
+<p>http.ResponseWriter有Write([]byte), Header(), WriteHeader(int)三个方法<br>http.Flusher有Flush方法，发送buffered data到客户端。<br>http.Hijacker有Hijack方法。<br>Status方法返回res的code。<br>Written方法同Context的Written方法。<br>Size方法返回res的body的size。<br>Before方法用来在res的写操作执行前调用方法，对WriteHeader这类很有用。</p>
+<h3 id="type_BeforeFunc_func_28ResponseWriter_29"><a href="#type_BeforeFunc_func_28ResponseWriter_29" class="headerlink" title="type BeforeFunc func(ResponseWriter)"></a>type BeforeFunc func(ResponseWriter)</h3><h3 id="func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><a href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter" class="headerlink" title="func NewResponseWriter(rw http.ResponseWriter) ResponseWriter"></a>func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</h3><p>用http.ResponseWriter构造，返回一个实现了ResponseWriter的struct的实例。该struct其中一个参数的类型为[]BeforeFuncs。</p>
+<h3 id="func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><a href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29" class="headerlink" title="func (rw *responseWriter) WriteHeader(s int)"></a>func (rw *responseWriter) WriteHeader(s int)</h3><p>首先把rw的BeforeFuncs从后往前执行一遍，然后执行WriteHeader方法。给实例Status属性赋值。</p>
+<h3 id="func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><a href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29" class="headerlink" title="func (rw *responseWriter) Before(before BeforeFunc)"></a>func (rw *responseWriter) Before(before BeforeFunc)</h3><p>把BeforeFunc添加到rw的[]BeforeFuncs后面。</p>
+<h2 id="return_handle-go_3A"><a href="#return_handle-go_3A" class="headerlink" title="return_handle.go:"></a>return_handle.go:</h2><h3 id="type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><a href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29" class="headerlink" title="type ReturnHandler func(Context, []reflect.Value)"></a>type ReturnHandler func(Context, []reflect.Value)</h3><p>一个服务，当一个routerhandler返回了某些东西时，该服务可以处理这些返回值。</p>
+<h2 id="martini-go_3A"><a href="#martini-go_3A" class="headerlink" title="martini.go:"></a>martini.go:</h2><h3 id="type_Martini_struct__7B"><a href="#type_Martini_struct__7B" class="headerlink" title="type Martini struct {"></a>type Martini struct {</h3><pre><code>inject.Injector
+handlers []Handler
+action   Handler
+logger   *log.Logger
+</code></pre><p>}</p>
+<h3 id="type_Handler_interface_7B_7D"><a href="#type_Handler_interface_7B_7D" class="headerlink" title="type Handler interface{}"></a>type Handler interface{}</h3><h3 id="type_Context_interface_7B"><a href="#type_Context_interface_7B" class="headerlink" title="type Context interface{"></a>type Context interface{</h3><pre><code>inject.Injector
+Next()
+Written() bool
+</code></pre><p>}</p>
+<p>一个request上下文的接口，可以为request注入服务。</p>
+<p>Next()方法这样来工作：暂停中间件方法，执行这次的req和res操作，执行完后再继续执行中间件方法下面的内容。</p>
+<p>Written()用以判断有没有输出res。</p>
+<h3 id="func_New_28_29_*Martini"><a href="#func_New_28_29_*Martini" class="headerlink" title="func New() *Martini"></a>func New() *Martini</h3><p>创建一个Martini实例指针，给它的Injector注入自己的logger和defaultReturnHandler()。</p>
+<h3 id="func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><a href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29" class="headerlink" title="func (m *Martini) Handlers(handlers …Handler)"></a>func (m *Martini) Handlers(handlers …Handler)</h3><p>make m实例的handlers切片，对每个handler进行Use操作。</p>
+<h3 id="func__28m_*Martini_29_Use_28handler_Handler_29"><a href="#func__28m_*Martini_29_Use_28handler_Handler_29" class="headerlink" title="func (m *Martini) Use(handler Handler)"></a>func (m *Martini) Use(handler Handler)</h3><p>对handler进行是否为func的判断，然后加入到m的handlers切片后面。</p>
+<h3 id="func__28m_*Martini_29_Action_28handler_Handler_29"><a href="#func__28m_*Martini_29_Action_28handler_Handler_29" class="headerlink" title="func (m *Martini) Action(handler Handler)"></a>func (m *Martini) Action(handler Handler)</h3><p>把m的action赋值为handler，在之前进行func类型的判断。</p>
+<h3 id="func__28m_Martini_29_Logger_28logger_log-Logger_29"><a href="#func__28m_Martini_29_Logger_28logger_log-Logger_29" class="headerlink" title="func (m Martini) Logger(logger log.Logger)"></a>func (m <em>Martini) Logger(logger </em>log.Logger)</h3><p>把m的logger赋值为logger，然后注入到m的Injector中。</p>
+<h3 id="func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><a href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29" class="headerlink" title="func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)"></a>func (m <em>Martini) ServeHTTP(res http.ResponseWriter, req </em>http.Request)</h3><p>创建一个context，把m的handlers和action拿过去，把它的Injector的parent赋值为m的Injector，把该context自己，responsewriter，req都注入到它的Injector。然后一个run方法把c的handlers从头到尾挨个用依赖注入方式调用。注意，action在createContext时被设置为最后一个handler。</p>
+<h3 id="func__28c_*context_29_Next_28_29"><a href="#func__28c_*context_29_Next_28_29" class="headerlink" title="func (c *context) Next()"></a>func (c *context) Next()</h3><p>Context接口的Next()方法实现的很巧妙，给context实例一个index值，调用run方法时，把handlers每一个handler用injector执行一遍，执行一个index++；如果在某个handler中调用了Next()方法，则index++，然后再调用run方法，用一种同步的代码实现了异步的操作。</p>
+
+        
+        
+        <p class="article-more-link">
+          
+       </p>
+    </div>
+    <footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+</div>
+
+
+
+
+<div class="comments-count">
+	
+</div>
+
+</footer>
+
+
+    </article>
+
+
+
+
+
+
+   
+    
+    <article class="post-expand post" itemprop="articleBody"> 
+        <header class="article-info clearfix">
+  <h1 itemprop="name">
+    
       <a href="/2016/03/15/programming-experience/" title="一些点滴记录" itemprop="url">一些点滴记录</a>
   </h1>
   <p class="article-author">By

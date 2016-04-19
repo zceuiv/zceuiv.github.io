@@ -1,0 +1,527 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>martini框架源码解剖 | Invoker&#39;s 鱼食罐</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Invoker">
+    
+
+    
+    <meta name="description" content="env.go:const(Dev  string
+Prod string
+Test string
+)
+环境常量
+var(Root string
+Env  string
+)
+运行根目录，环境变量，默认为Dev
+init()初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。
+logger.go:func Log">
+<meta property="og:type" content="article">
+<meta property="og:title" content="martini框架源码解剖">
+<meta property="og:url" content="http://yoursite.com/2016/04/18/martini-source-code/index.html">
+<meta property="og:site_name" content="Invoker's 鱼食罐">
+<meta property="og:description" content="env.go:const(Dev  string
+Prod string
+Test string
+)
+环境常量
+var(Root string
+Env  string
+)
+运行根目录，环境变量，默认为Dev
+init()初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。
+logger.go:func Log">
+<meta property="og:updated_time" content="2016-04-19T07:49:05.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="martini框架源码解剖">
+<meta name="twitter:description" content="env.go:const(Dev  string
+Prod string
+Test string
+)
+环境常量
+var(Root string
+Env  string
+)
+运行根目录，环境变量，默认为Dev
+init()初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。
+logger.go:func Log">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon_bottle.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Invoker&#39;s 鱼食罐">Invoker&#39;s 鱼食罐</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/04/18/martini-source-code/" title="martini框架源码解剖" itemprop="url">martini框架源码解剖</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
+		
+  <p class="article-time">
+    <time datetime="2016-04-18T02:42:49.000Z" itemprop="datePublished"> 發表於 2016-04-18</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目錄</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#env-go_3A"><span class="toc-number">1.</span> <span class="toc-text">env.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#const_28"><span class="toc-number">1.1.</span> <span class="toc-text">const(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#var_28"><span class="toc-number">1.2.</span> <span class="toc-text">var(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init_28_29"><span class="toc-number">1.3.</span> <span class="toc-text">init()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logger-go_3A"><span class="toc-number">2.</span> <span class="toc-text">logger.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Logger_28_29_Handler"><span class="toc-number">2.1.</span> <span class="toc-text">func Logger() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#recovery-go_3A"><span class="toc-number">3.</span> <span class="toc-text">recovery.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Recovery_28_29_Handler"><span class="toc-number">3.1.</span> <span class="toc-text">func Recovery() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#response_writer-go"><span class="toc-number">4.</span> <span class="toc-text">response_writer.go</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ResponseWriter_interface_7B"><span class="toc-number">4.1.</span> <span class="toc-text">type ResponseWriter interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_BeforeFunc_func_28ResponseWriter_29"><span class="toc-number">4.2.</span> <span class="toc-text">type BeforeFunc func(ResponseWriter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><span class="toc-number">4.3.</span> <span class="toc-text">func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><span class="toc-number">4.4.</span> <span class="toc-text">func (rw *responseWriter) WriteHeader(s int)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><span class="toc-number">4.5.</span> <span class="toc-text">func (rw *responseWriter) Before(before BeforeFunc)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#return_handle-go_3A"><span class="toc-number">5.</span> <span class="toc-text">return_handle.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><span class="toc-number">5.1.</span> <span class="toc-text">type ReturnHandler func(Context, []reflect.Value)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#martini-go_3A"><span class="toc-number">6.</span> <span class="toc-text">martini.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Martini_struct__7B"><span class="toc-number">6.1.</span> <span class="toc-text">type Martini struct {</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Handler_interface_7B_7D"><span class="toc-number">6.2.</span> <span class="toc-text">type Handler interface{}</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Context_interface_7B"><span class="toc-number">6.3.</span> <span class="toc-text">type Context interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_New_28_29_*Martini"><span class="toc-number">6.4.</span> <span class="toc-text">func New() *Martini</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><span class="toc-number">6.5.</span> <span class="toc-text">func (m *Martini) Handlers(handlers …Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Use_28handler_Handler_29"><span class="toc-number">6.6.</span> <span class="toc-text">func (m *Martini) Use(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Action_28handler_Handler_29"><span class="toc-number">6.7.</span> <span class="toc-text">func (m *Martini) Action(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_Logger_28logger_log-Logger_29"><span class="toc-number">6.8.</span> <span class="toc-text">func (m Martini) Logger(logger log.Logger)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><span class="toc-number">6.9.</span> <span class="toc-text">func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28c_*context_29_Next_28_29"><span class="toc-number">6.10.</span> <span class="toc-text">func (c *context) Next()</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h2 id="env-go_3A"><a href="#env-go_3A" class="headerlink" title="env.go:"></a>env.go:</h2><h3 id="const_28"><a href="#const_28" class="headerlink" title="const("></a>const(</h3><pre><code>Dev  string
+Prod string
+Test string
+</code></pre><p>)</p>
+<p>环境常量</p>
+<h3 id="var_28"><a href="#var_28" class="headerlink" title="var("></a>var(</h3><pre><code>Root string
+Env  string
+</code></pre><p>)</p>
+<p>运行根目录，环境变量，默认为Dev</p>
+<h3 id="init_28_29"><a href="#init_28_29" class="headerlink" title="init()"></a>init()</h3><p>初始化Root变量为运行程序目录，从环境变量中取出MARTINI_ENV参数对Env变量(os.Getenv(“MARTINI_ENV”))。</p>
+<h2 id="logger-go_3A"><a href="#logger-go_3A" class="headerlink" title="logger.go:"></a>logger.go:</h2><h3 id="func_Logger_28_29_Handler"><a href="#func_Logger_28_29_Handler" class="headerlink" title="func Logger() Handler"></a>func Logger() Handler</h3><p>返回一个闭包，类型为func(res http.ResponseWriter, req <em>http.Request, c Context, log </em>log.logger)。该闭包作为一个中间件handler，用以log来的req和走的res。<br>闭包首先通过http.header获取req的的远程地址，然后纪录该远程地址访问的URL、使用的Method，最后纪录res的状态，req到res的耗时。</p>
+<h2 id="recovery-go_3A"><a href="#recovery-go_3A" class="headerlink" title="recovery.go:"></a>recovery.go:</h2><h3 id="func_Recovery_28_29_Handler"><a href="#func_Recovery_28_29_Handler" class="headerlink" title="func Recovery() Handler"></a>func Recovery() Handler</h3><p>返回一个闭包，类型为func(c Context, log *log.Logger)。从500状态或者panic状态恢复，如果是Dev模式则会输出panic页面。<br>闭包defer用recover方法捕获异常，然后用context.Next()方法继续执行req和res处理。捕获到异常以后，用继承自Injector的Get方法获取context当前的res，然后控制res根据运行模式的不同输出错误页面。</p>
+<h2 id="response_writer-go"><a href="#response_writer-go" class="headerlink" title="response_writer.go"></a>response_writer.go</h2><h3 id="type_ResponseWriter_interface_7B"><a href="#type_ResponseWriter_interface_7B" class="headerlink" title="type ResponseWriter interface{"></a>type ResponseWriter interface{</h3><pre><code>http.ResponseWriter
+http.Flusher
+http.Hijacker
+Status()  int
+Written() bool
+Size()    int
+Before(BeforeFunc)
+</code></pre><p>}</p>
+<p>http.ResponseWriter有Write([]byte), Header(), WriteHeader(int)三个方法<br>http.Flusher有Flush方法，发送buffered data到客户端。<br>http.Hijacker有Hijack方法。<br>Status方法返回res的code。<br>Written方法同Context的Written方法。<br>Size方法返回res的body的size。<br>Before方法用来在res的写操作执行前调用方法，对WriteHeader这类很有用。</p>
+<h3 id="type_BeforeFunc_func_28ResponseWriter_29"><a href="#type_BeforeFunc_func_28ResponseWriter_29" class="headerlink" title="type BeforeFunc func(ResponseWriter)"></a>type BeforeFunc func(ResponseWriter)</h3><h3 id="func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><a href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter" class="headerlink" title="func NewResponseWriter(rw http.ResponseWriter) ResponseWriter"></a>func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</h3><p>用http.ResponseWriter构造，返回一个实现了ResponseWriter的struct的实例。该struct其中一个参数的类型为[]BeforeFuncs。</p>
+<h3 id="func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><a href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29" class="headerlink" title="func (rw *responseWriter) WriteHeader(s int)"></a>func (rw *responseWriter) WriteHeader(s int)</h3><p>首先把rw的BeforeFuncs从后往前执行一遍，然后执行WriteHeader方法。给实例Status属性赋值。</p>
+<h3 id="func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><a href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29" class="headerlink" title="func (rw *responseWriter) Before(before BeforeFunc)"></a>func (rw *responseWriter) Before(before BeforeFunc)</h3><p>把BeforeFunc添加到rw的[]BeforeFuncs后面。</p>
+<h2 id="return_handle-go_3A"><a href="#return_handle-go_3A" class="headerlink" title="return_handle.go:"></a>return_handle.go:</h2><h3 id="type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><a href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29" class="headerlink" title="type ReturnHandler func(Context, []reflect.Value)"></a>type ReturnHandler func(Context, []reflect.Value)</h3><p>一个服务，当一个routerhandler返回了某些东西时，该服务可以处理这些返回值。</p>
+<h2 id="martini-go_3A"><a href="#martini-go_3A" class="headerlink" title="martini.go:"></a>martini.go:</h2><h3 id="type_Martini_struct__7B"><a href="#type_Martini_struct__7B" class="headerlink" title="type Martini struct {"></a>type Martini struct {</h3><pre><code>inject.Injector
+handlers []Handler
+action   Handler
+logger   *log.Logger
+</code></pre><p>}</p>
+<h3 id="type_Handler_interface_7B_7D"><a href="#type_Handler_interface_7B_7D" class="headerlink" title="type Handler interface{}"></a>type Handler interface{}</h3><h3 id="type_Context_interface_7B"><a href="#type_Context_interface_7B" class="headerlink" title="type Context interface{"></a>type Context interface{</h3><pre><code>inject.Injector
+Next()
+Written() bool
+</code></pre><p>}</p>
+<p>一个request上下文的接口，可以为request注入服务。</p>
+<p>Next()方法这样来工作：暂停中间件方法，执行这次的req和res操作，执行完后再继续执行中间件方法下面的内容。</p>
+<p>Written()用以判断有没有输出res。</p>
+<h3 id="func_New_28_29_*Martini"><a href="#func_New_28_29_*Martini" class="headerlink" title="func New() *Martini"></a>func New() *Martini</h3><p>创建一个Martini实例指针，给它的Injector注入自己的logger和defaultReturnHandler()。</p>
+<h3 id="func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><a href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29" class="headerlink" title="func (m *Martini) Handlers(handlers …Handler)"></a>func (m *Martini) Handlers(handlers …Handler)</h3><p>make m实例的handlers切片，对每个handler进行Use操作。</p>
+<h3 id="func__28m_*Martini_29_Use_28handler_Handler_29"><a href="#func__28m_*Martini_29_Use_28handler_Handler_29" class="headerlink" title="func (m *Martini) Use(handler Handler)"></a>func (m *Martini) Use(handler Handler)</h3><p>对handler进行是否为func的判断，然后加入到m的handlers切片后面。</p>
+<h3 id="func__28m_*Martini_29_Action_28handler_Handler_29"><a href="#func__28m_*Martini_29_Action_28handler_Handler_29" class="headerlink" title="func (m *Martini) Action(handler Handler)"></a>func (m *Martini) Action(handler Handler)</h3><p>把m的action赋值为handler，在之前进行func类型的判断。</p>
+<h3 id="func__28m_Martini_29_Logger_28logger_log-Logger_29"><a href="#func__28m_Martini_29_Logger_28logger_log-Logger_29" class="headerlink" title="func (m Martini) Logger(logger log.Logger)"></a>func (m <em>Martini) Logger(logger </em>log.Logger)</h3><p>把m的logger赋值为logger，然后注入到m的Injector中。</p>
+<h3 id="func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><a href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29" class="headerlink" title="func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)"></a>func (m <em>Martini) ServeHTTP(res http.ResponseWriter, req </em>http.Request)</h3><p>创建一个context，把m的handlers和action拿过去，把它的Injector的parent赋值为m的Injector，把该context自己，responsewriter，req都注入到它的Injector。然后一个run方法把c的handlers从头到尾挨个用依赖注入方式调用。注意，action在createContext时被设置为最后一个handler。</p>
+<h3 id="func__28c_*context_29_Next_28_29"><a href="#func__28c_*context_29_Next_28_29" class="headerlink" title="func (c *context) Next()"></a>func (c *context) Next()</h3><p>Context接口的Next()方法实现的很巧妙，给context实例一个index值，调用run方法时，把handlers每一个handler用injector执行一遍，执行一个index++；如果在某个handler中调用了Next()方法，则index++，然后再调用run方法，用一种同步的代码实现了异步的操作。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/04/18/martini-source-code/" data-title="martini框架源码解剖 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2016/03/15/programming-experience/"  title="一些点滴记录">
+ <strong>下一篇：</strong><br/> 
+ <span>一些点滴记录
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目錄</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#env-go_3A"><span class="toc-number">1.</span> <span class="toc-text">env.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#const_28"><span class="toc-number">1.1.</span> <span class="toc-text">const(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#var_28"><span class="toc-number">1.2.</span> <span class="toc-text">var(</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#init_28_29"><span class="toc-number">1.3.</span> <span class="toc-text">init()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#logger-go_3A"><span class="toc-number">2.</span> <span class="toc-text">logger.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Logger_28_29_Handler"><span class="toc-number">2.1.</span> <span class="toc-text">func Logger() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#recovery-go_3A"><span class="toc-number">3.</span> <span class="toc-text">recovery.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#func_Recovery_28_29_Handler"><span class="toc-number">3.1.</span> <span class="toc-text">func Recovery() Handler</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#response_writer-go"><span class="toc-number">4.</span> <span class="toc-text">response_writer.go</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ResponseWriter_interface_7B"><span class="toc-number">4.1.</span> <span class="toc-text">type ResponseWriter interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_BeforeFunc_func_28ResponseWriter_29"><span class="toc-number">4.2.</span> <span class="toc-text">type BeforeFunc func(ResponseWriter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_NewResponseWriter_28rw_http-ResponseWriter_29_ResponseWriter"><span class="toc-number">4.3.</span> <span class="toc-text">func NewResponseWriter(rw http.ResponseWriter) ResponseWriter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_WriteHeader_28s_int_29"><span class="toc-number">4.4.</span> <span class="toc-text">func (rw *responseWriter) WriteHeader(s int)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28rw_*responseWriter_29_Before_28before_BeforeFunc_29"><span class="toc-number">4.5.</span> <span class="toc-text">func (rw *responseWriter) Before(before BeforeFunc)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#return_handle-go_3A"><span class="toc-number">5.</span> <span class="toc-text">return_handle.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_ReturnHandler_func_28Context_2C__5B_5Dreflect-Value_29"><span class="toc-number">5.1.</span> <span class="toc-text">type ReturnHandler func(Context, []reflect.Value)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#martini-go_3A"><span class="toc-number">6.</span> <span class="toc-text">martini.go:</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Martini_struct__7B"><span class="toc-number">6.1.</span> <span class="toc-text">type Martini struct {</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Handler_interface_7B_7D"><span class="toc-number">6.2.</span> <span class="toc-text">type Handler interface{}</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#type_Context_interface_7B"><span class="toc-number">6.3.</span> <span class="toc-text">type Context interface{</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func_New_28_29_*Martini"><span class="toc-number">6.4.</span> <span class="toc-text">func New() *Martini</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Handlers_28handlers__u2026Handler_29"><span class="toc-number">6.5.</span> <span class="toc-text">func (m *Martini) Handlers(handlers …Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Use_28handler_Handler_29"><span class="toc-number">6.6.</span> <span class="toc-text">func (m *Martini) Use(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_*Martini_29_Action_28handler_Handler_29"><span class="toc-number">6.7.</span> <span class="toc-text">func (m *Martini) Action(handler Handler)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_Logger_28logger_log-Logger_29"><span class="toc-number">6.8.</span> <span class="toc-text">func (m Martini) Logger(logger log.Logger)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28m_Martini_29_ServeHTTP_28res_http-ResponseWriter_2C_req_http-Request_29"><span class="toc-number">6.9.</span> <span class="toc-text">func (m Martini) ServeHTTP(res http.ResponseWriter, req http.Request)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#func__28c_*context_29_Next_28_29"><span class="toc-number">6.10.</span> <span class="toc-text">func (c *context) Next()</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分類</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/blog/" title="blog">blog<sup>2</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/patch/" title="patch">patch<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">標簽</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/Go/" title="Go">Go<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Web/" title="Web">Web<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/杂谈/" title="杂谈">杂谈<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情鏈接</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS 訂閱</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">新浪微博</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Welcome to my page. <br/>
+			This is the place I feed myself. Enjoy it!</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		
+		<a href="/about" target="_blank" title="Invoker">Invoker</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回頂部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
