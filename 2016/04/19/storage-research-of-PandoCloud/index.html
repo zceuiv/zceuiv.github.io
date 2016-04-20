@@ -19,7 +19,8 @@
 <meta property="og:site_name" content="Invoker's 鱼食罐">
 <meta property="og:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
 本文来研究PandoCloud项目存储和运用海量物联网数据的思路和技巧。">
-<meta property="og:updated_time" content="2016-04-19T10:58:22.000Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/PandoCloud/pando-cloud/master/docs/img/architecture.jpeg">
+<meta property="og:updated_time" content="2016-04-20T02:09:55.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="对PandoCloud的数据存储的研究">
 <meta name="twitter:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
@@ -103,6 +104,7 @@
 <p>本文来研究PandoCloud项目存储和运用海量物联网数据的思路和技巧。</p>
 <a id="more"></a>
 <h2 id="u7CFB_u7EDF_u7ED3_u6784"><a href="#u7CFB_u7EDF_u7ED3_u6784" class="headerlink" title="系统结构"></a>系统结构</h2><p>详细介绍请看原项目，这里不作深入，只简单说下。它的系统分为三层，接入层用来与物联网设备交互；业务层提供四种服务：平台的配置和元数据管理、设备管理、web服务、管理设备接入服务；核心层是这样，用mongo存储设备的数据，用mysql存储一些通用的设备信息，redis做缓存，neq，etcd，ELK先省略。</p>
+<p><img src="https://raw.githubusercontent.com/PandoCloud/pando-cloud/master/docs/img/architecture.jpeg" alt="系统结构图——以上图片直接引自PandoCloud项目文档"></p>
 <h2 id="u4E1A_u52A1_u5C42"><a href="#u4E1A_u52A1_u5C42" class="headerlink" title="业务层"></a>业务层</h2><p>业务层的四种服务：</p>
 <blockquote>
 <ul>
@@ -113,10 +115,17 @@
 </ul>
 </blockquote>
 <p>除此之外还包括http access和mqtt access。</p>
-<h1 id="controller"><a href="#controller" class="headerlink" title="controller"></a>controller</h1><p>Step 1. 创建了一个 github.com/PandoCloud/pando-cloud/pkg/server 的实例，实例名为controller，内置了一个server manager和rpc client的map容器。</p>
-<p>Step 2. 创建了一个controller，其中包含了3个mongodb的recorder(collection)，2个用 github.com/streadway/amqp 实现的的队列。三个recorder分别与command、event、data相关，两个queue是event队列和status队列。</p>
-<p>Step 3. 将controller注册为server实例的RPC.Register。同时给server实例一个rpc server实例，该实例中又包含一个tcp server，其中包含一个rpc handler。所以说这个rpc server本质上是一个tcp server，但是它不是controller server实例的tcp server。</p>
-<p>Step 4. 将server实例的各个server开协程，监听端口。然后循环地{把它们注册到server manager上; 更新server的host; sleep 1分钟}。</p>
+<h1 id="controller"><a href="#controller" class="headerlink" title="controller"></a>controller</h1><p>文档中对于controller的阐述如下：</p>
+<p><code>controller</code>主要负责设备信息交互，具体分两种场景：</p>
+<ul>
+<li>当应用需要向设备发送信息时，<code>controller</code>会向<code>devicemanager</code> 查询当前设备的在线信息，并根据反馈的接入点，向接入服务器发送信息转发请求。</li>
+<li>当设备向平台发送数据时，<code>controller</code>会将数据存入MongoDB，如需通知应用则放入消息队列。</li>
+</ul>
+<p><strong>Step 1.</strong> 创建了一个 <code>github.com/PandoCloud/pando-cloud/pkg/server</code> 的实例，实例名为controller，内置了一个server manager和rpc client的map容器。</p>
+<p><strong>Step 2.</strong> 创建了一个controller，其中包含了3个recorder(mongodb的collection)，2个用 <code>github.com/streadway/amqp</code> 实现的的队列。三个recorder分别与command、event、data相关，两个queue是event队列和status队列。</p>
+<p><strong>Step 3.</strong> 将controller注册为server实例的RPC.Register。同时给server实例一个rpc server实例，该实例中又包含一个tcp server，其中包含一个rpc handler。所以说这个rpc server本质上是一个tcp server，但是它不是controller server实例的tcp server。</p>
+<p><strong>Step 4.</strong> 将server实例的各个server开协程，监听端口。对于controller server来讲，只有rpc server，因此它的tcp server和http server无需考虑。然后循环地{把它们注册到server manager上; 更新server的host; sleep 1分钟}。</p>
+<p>其中我注意了两点：OnStatus时，把args存入了data的recorder，然后用status队列send出去；OnEvent时，把args存入event的recorder，然后用event队列send出去。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
