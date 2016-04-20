@@ -20,7 +20,7 @@
 <meta property="og:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
 本文来研究PandoCloud项目存储和运用海量物联网数据的思路和技巧。">
 <meta property="og:image" content="https://raw.githubusercontent.com/PandoCloud/pando-cloud/master/docs/img/architecture.jpeg">
-<meta property="og:updated_time" content="2016-04-20T02:09:55.000Z">
+<meta property="og:updated_time" content="2016-04-20T10:08:38.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="对PandoCloud的数据存储的研究">
 <meta name="twitter:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
@@ -96,7 +96,7 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a>
 		
 		</div>
 		
@@ -115,17 +115,57 @@
 </ul>
 </blockquote>
 <p>除此之外还包括http access和mqtt access。</p>
+<p>每个服务都创建了一个<code>github.com/PandoCloud/pando-cloud/pkg/server</code>实例，通过server包内的方法反射调用其他服务的方法。</p>
 <h1 id="controller"><a href="#controller" class="headerlink" title="controller"></a>controller</h1><p>文档中对于controller的阐述如下：</p>
 <p><code>controller</code>主要负责设备信息交互，具体分两种场景：</p>
 <ul>
 <li>当应用需要向设备发送信息时，<code>controller</code>会向<code>devicemanager</code> 查询当前设备的在线信息，并根据反馈的接入点，向接入服务器发送信息转发请求。</li>
 <li>当设备向平台发送数据时，<code>controller</code>会将数据存入MongoDB，如需通知应用则放入消息队列。</li>
 </ul>
-<p><strong>Step 1.</strong> 创建了一个 <code>github.com/PandoCloud/pando-cloud/pkg/server</code> 的实例，实例名为controller，内置了一个server manager和rpc client的map容器。</p>
+<p><strong>Step 1.</strong> 创建了一个server的实例，实例名为controller，内置了一个server manager和rpc client的map容器。</p>
 <p><strong>Step 2.</strong> 创建了一个controller，其中包含了3个recorder(mongodb的collection)，2个用 <code>github.com/streadway/amqp</code> 实现的的队列。三个recorder分别与command、event、data相关，两个queue是event队列和status队列。</p>
-<p><strong>Step 3.</strong> 将controller注册为server实例的RPC.Register。同时给server实例一个rpc server实例，该实例中又包含一个tcp server，其中包含一个rpc handler。所以说这个rpc server本质上是一个tcp server，但是它不是controller server实例的tcp server。</p>
+<p><strong>Step 3.</strong> 将controller注册为server实例的rpchandler。同时给server实例一个rpc server实例，该实例中又包含一个tcp server，其中包含一个rpc handler。所以说这个rpc server本质上是一个tcp server，但是它不是controller server实例的tcp server。</p>
 <p><strong>Step 4.</strong> 将server实例的各个server开协程，监听端口。对于controller server来讲，只有rpc server，因此它的tcp server和http server无需考虑。然后循环地{把它们注册到server manager上; 更新server的host; sleep 1分钟}。</p>
 <p>其中我注意了两点：OnStatus时，把args存入了data的recorder，然后用status队列send出去；OnEvent时，把args存入event的recorder，然后用event队列send出去。</p>
+<p>通过apiprovider对event的处理可以看到，这里的recorder没啥卵用，消息传递靠的都是消息队列，recorder如其名，只是纪录用的：纪录状态数据、事件、命令。</p>
+<h1 id="apiprovider"><a href="#apiprovider" class="headerlink" title="apiprovider"></a>apiprovider</h1><p><strong>Step 1.</strong> 创建一个server实例，名为apiprovider，内置同上。</p>
+<p><strong>Step 2.</strong> 启用一个Martini的classic实例，包含了<a href="/github.com/martini-contrib/render">render</a>件。把这个martini的实例注册为server实例的httphandler。配置其路由，功能如下(下面格式为”http方法”－”实际调用的处理方法”－”功能简介”，可以通过函数名大概猜到每个方法是做什么的)：</p>
+<blockquote>
+<ul>
+<li>GET方法－GetDeviceInfoByKey－通过key找到设备。</li>
+<li>GET方法－ApplicationAuthOnDeviceIdentifer，GetDeviceInfoByIdentifier－通过id找到设备。</li>
+<li>GET方法－ApplicationAuthOnDeviceIdentifer，CheckDeviceOnline，CheckProductConfig，GetDeviceCurrentStatus/GetDeviceLatestStatus－获取设备当前/上次状态。</li>
+<li>PUT方法－…，…，…，SetDeviceStatus－设置设备状态。</li>
+<li>POST方法－…，…，…，SendCommandToDevice－向设备发送命令。</li>
+</ul>
+</blockquote>
+<p>API详情在<a href="https://github.com/PandoCloud/pando-cloud/blob/master/docs/zh-cn/api-doc/application.md" target="_blank" rel="external">这里</a>。</p>
+<p><strong>Step 3.</strong> 开3个监听协程，一个用来更新应用程序，一个监听event队列，一个监听status队列(这个协程没定义任何动作，可以不用考虑)。当收到event时，根据event中的deviceId，查找相关设备及产品信息，而后生成report，用http request发送到每个应用程序去。</p>
+<p><strong>Step 4.</strong> server实例各个server开协程，监听端口。</p>
+<h1 id="registry"><a href="#registry" class="headerlink" title="registry"></a>registry</h1><p><strong>Step 1.</strong> 创建一个server实例，名为registry。</p>
+<p><strong>Step 2.</strong> 进行一次mysql的数据库迁移。(暂时看不懂)</p>
+<p><strong>Step 3.</strong> 用AES生成一个keygen，创建一个registry实例里面唯一属性就是这个keygen，将这个registry实例注册到server的rpchandler中。</p>
+<p><strong>Step 4.</strong> server实例各个server开协程，监听端口。registry应该不需要监听任何端口。</p>
+<p>registry的初始化过程比较简单，所以这里要着重看registry提供的服务。</p>
+<p><strong>Service 1.</strong> Vendor服务。包括Save，Find，Get方法。</p>
+<ul>
+<li>Save方法把Vendor插入或更新进入MySql数据库(根据ID判断)。如果是插入，则需要用registry实例的keygen根据id再生成一个随机密钥，然后再次更新。然后把MemCache中相应的纪录删除。</li>
+<li>Find方法是这样，通过id在MemCache中寻找，如果找到就把值赋给返回指针，如果没有找到，则去MySql中查询，返回查询的结果同时把值存入MemCache。</li>
+<li>Get方法是直接从MySql中取得所有Vendor数据。</li>
+</ul>
+<p><strong>Service 2.</strong> Product服务。包括Save，Find，Get，Validate方法。其中Save、Find、Get方法和Vendor的类似，单说Validate方法。</p>
+<ul>
+<li>Validate方法和Find方法类似，不同的是，Validate方法接收的参数是一个key，而非id。把key用keygen进行decode，会得到id，再根据id从MemCache或MySql中寻找Product数据，最后再次比较key合Product的key，如果成功则会返回Product的数据。</li>
+</ul>
+<p><strong>Service 3.</strong> Application服务。包括Save，Find，Get，Validate方法。与Product服务完全一致因此不再赘述。</p>
+<p><strong>Service 4.</strong> Device服务。包括Register，FindByIdentifier，FindById，Validate，Update方法。注意Identifier和Id是不一样的东西，后者应该是由MySql自动生成，而前者是用VendorId，ProductId，设备自带的DeviceCode生成的。</p>
+<ul>
+<li>Register方法，首先从传入参数中读取ProductKey，然后用ValidateProduct方法取到一个Product数据，然后生成device的Identifier。从MySql中查询这个Identifier，如果没有查询到则存进去，同时生成DeviceKey和DeviceSecret并再次更新；如果查询到则去MemCache中把它删除，去MySql中更新它的Version。</li>
+<li>FindByIdentifier方法，与上面的Find方法类似，需要MemCache参与，注意MemCache中的key使用的是Identifier。</li>
+<li>FindById方法，不需要MemCache，直接从MySql中查询。</li>
+<li>Validate方法，不需要MemCache，把key解密为Id，然后去MySql中查询，最后比较key与查询到的Device实例的key。</li>
+<li>Update方法，对应与上面的Save方法，只是没有insert的逻辑。<br>注：Device的DeviceSecret暂时没看到有什么卵用，并且在<a href="https://github.com/PandoCloud/pando-cloud/blob/master/services/registry/registry.go#L67" target="_blank" rel="external">代码</a>中DeviceSecret赋值还写错了。</li>
+</ul>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -180,7 +220,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a>
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a>
  
   </div>
 
