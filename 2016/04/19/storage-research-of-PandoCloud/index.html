@@ -20,7 +20,7 @@
 <meta property="og:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
 本文来研究PandoCloud项目存储和运用海量物联网数据的思路和技巧。">
 <meta property="og:image" content="https://raw.githubusercontent.com/PandoCloud/pando-cloud/master/docs/img/architecture.jpeg">
-<meta property="og:updated_time" content="2016-04-20T10:08:38.000Z">
+<meta property="og:updated_time" content="2016-04-21T08:02:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="对PandoCloud的数据存储的研究">
 <meta name="twitter:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
@@ -96,7 +96,7 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">文章目錄</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a>
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u4E00_u4E0B_u4E1A_u52A1_u5C42_u548C_u63A5_u5165_u5C42_u4E2D_u7684_u7F51_u7EDC_u670D_u52A1"><span class="toc-number"></span> <span class="toc-text">总结一下业务层和接入层中的网络服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u8BE5_u9879_u76EE_u7684_u5404_u4E2A_u5B58_u50A8_u548C_u7F13_u5B58_u7684_u8FD0_u7528"><span class="toc-number"></span> <span class="toc-text">总结该项目的各个存储和缓存的运用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u603B_u7ED3"><span class="toc-number"></span> <span class="toc-text">总总结</span></a>
 		
 		</div>
 		
@@ -114,7 +114,6 @@
 <li>registy: 平台配置和元数据管理</li>
 </ul>
 </blockquote>
-<p>除此之外还包括http access和mqtt access。</p>
 <p>每个服务都创建了一个<code>github.com/PandoCloud/pando-cloud/pkg/server</code>实例，通过server包内的方法反射调用其他服务的方法。</p>
 <h1 id="controller"><a href="#controller" class="headerlink" title="controller"></a>controller</h1><p>文档中对于controller的阐述如下：</p>
 <p><code>controller</code>主要负责设备信息交互，具体分两种场景：</p>
@@ -166,6 +165,33 @@
 <li>Validate方法，不需要MemCache，把key解密为Id，然后去MySql中查询，最后比较key与查询到的Device实例的key。</li>
 <li>Update方法，对应与上面的Save方法，只是没有insert的逻辑。<br>注：Device的DeviceSecret暂时没看到有什么卵用，并且在<a href="https://github.com/PandoCloud/pando-cloud/blob/master/services/registry/registry.go#L67" target="_blank" rel="external">代码</a>中DeviceSecret赋值还写错了。</li>
 </ul>
+<h1 id="u603B_u7ED3_u4E00_u4E0B_u4E1A_u52A1_u5C42_u548C_u63A5_u5165_u5C42_u4E2D_u7684_u7F51_u7EDC_u670D_u52A1"><a href="#u603B_u7ED3_u4E00_u4E0B_u4E1A_u52A1_u5C42_u548C_u63A5_u5165_u5C42_u4E2D_u7684_u7F51_u7EDC_u670D_u52A1" class="headerlink" title="总结一下业务层和接入层中的网络服务"></a>总结一下业务层和接入层中的网络服务</h1><p>业务层4种服务以及接入层的2种服务都是基于server，而每个server实例又包含一个或多个tcp server、rpc server、http server,使用了etcd对server包含的每个子server进行了管理。这里统计一下每一个服务的子server。</p>
+<ul>
+<li>controller: 一个rpc服务，为controller实例。</li>
+<li>apiprovider: 一个http服务，为一个martini实例。</li>
+<li>registry: 一个rpc服务，为registry实例。</li>
+<li>devicemanager: 一个rpc服务，为devicemanager实例。</li>
+<li>httpaccess: 一个http服务，为一个martini实例。</li>
+<li>mqttaccess: 一个rpc服务，为access实例；一个tcp服务，为access实例的MqttBroker。</li>
+</ul>
+<h1 id="u603B_u7ED3_u8BE5_u9879_u76EE_u7684_u5404_u4E2A_u5B58_u50A8_u548C_u7F13_u5B58_u7684_u8FD0_u7528"><a href="#u603B_u7ED3_u8BE5_u9879_u76EE_u7684_u5404_u4E2A_u5B58_u50A8_u548C_u7F13_u5B58_u7684_u8FD0_u7528" class="headerlink" title="总结该项目的各个存储和缓存的运用"></a>总结该项目的各个存储和缓存的运用</h1><p><strong>MySql:</strong> 是最核心的存储，主要存储4种信息：供应商、产品、设备、应用程序。在物联网中设备数量太过庞大，于是该项目把每一种设备的信息分三级存储，即<em>供应商－产品－设备</em>，这样就降低了设备的调度维护复杂度。<strong>这里还应该去着重看看设备是分表存储还是一张表存储还是其他方式。</strong>貌似不分表。</p>
+<p><strong>MemCache:</strong> 负责分担MySql的压力。</p>
+<p><strong>MongoDb:</strong> 负责相对简单，只用来在controller服务运行时纪录三种内容，准确地讲目前只用来在设备向服务或应用发信息时纪录两种内容：设备状态、设备事件。没有进行其他读写操作。</p>
+<p><strong>RabbitMQ:</strong> controller服务中，设备向服务或应用程序发信息时，存入该消息队列。队列分两种：状态队列和事件队列。</p>
+<p><strong>Redis:</strong> httpaccess和devicemanager中用到了该类型存储。在devicemanager中，存储了设备的在线状态和令牌。设备在线时，会把设备的ip、接入主机、id存入redis，可读，可重新设置超时时间，当设备离线时从redis中删除。令牌的话就很简单，生成token，存入redis，并返回生成的token；验证token，就用id从redis中取出来比较，成功了再给token续时间。</p>
+<p><strong>etcd:</strong> 在server实现内使用。由于上述业务层4种服务以及接入层的2种服务都是基于server，而每个server实例又包含一个或多个tcp server、rpc server、http server，因此使用了etcd对server包含的每个子server进行了管理。etcd是键值存储的，子server的键为{etcd前缀+server名+子server的Flag+”/“+子server的addr}，值为子server的addr，实效时间为90秒。在server运行时，每1分钟对etcd循环一次，更新子server在etcd中的状态。每个子server通过其前缀被它的server有效管理起来。</p>
+<p><strong>nsq:</strong> 仅存在于文档里。</p>
+<p><strong>ELK:</strong> 同上。</p>
+<h1 id="u603B_u603B_u7ED3"><a href="#u603B_u603B_u7ED3" class="headerlink" title="总总结"></a>总总结</h1><p>本文只着重关注了PandoCloud项目对物联网在存储方面的处理，因此对以下四方面并没有着重分析：</p>
+<blockquote>
+<ul>
+<li>分布式服务的调度</li>
+<li>物联网设备的接入过程</li>
+<li>其他各个基础设施的实现</li>
+<li>通过api能够使用的功能</li>
+</ul>
+</blockquote>
+<p>总的来讲这是一个我见过的非常优秀的分布式系统，运用了诸多缓存技术，对服务的调度也进行了一定的处理，并且符合了微服务架构的设计思想，让每个服务去对应自己使用的存储，完整地提供功能，也因此可以支持docker，所以它很潮很酷。</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -220,7 +246,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">文章目錄</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a>
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u4E00_u4E0B_u4E1A_u52A1_u5C42_u548C_u63A5_u5165_u5C42_u4E2D_u7684_u7F51_u7EDC_u670D_u52A1"><span class="toc-number"></span> <span class="toc-text">总结一下业务层和接入层中的网络服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u8BE5_u9879_u76EE_u7684_u5404_u4E2A_u5B58_u50A8_u548C_u7F13_u5B58_u7684_u8FD0_u7528"><span class="toc-number"></span> <span class="toc-text">总结该项目的各个存储和缓存的运用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u603B_u7ED3"><span class="toc-number"></span> <span class="toc-text">总总结</span></a>
  
   </div>
 
