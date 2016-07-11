@@ -20,7 +20,7 @@
 <meta property="og:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
 本文来研究PandoCloud项目存储和运用海量物联网数据的思路和技巧。">
 <meta property="og:image" content="https://raw.githubusercontent.com/PandoCloud/pando-cloud/master/docs/img/architecture.jpeg">
-<meta property="og:updated_time" content="2016-04-21T08:04:54.000Z">
+<meta property="og:updated_time" content="2016-05-19T08:27:10.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="对PandoCloud的数据存储的研究">
 <meta name="twitter:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
@@ -180,6 +180,7 @@
 <p><strong>RabbitMQ:</strong> controller服务中，设备向服务或应用程序发信息时，存入该消息队列。队列分两种：状态队列和事件队列。</p>
 <p><strong>Redis:</strong> httpaccess和devicemanager中用到了该类型存储。在devicemanager中，存储了设备的在线状态和令牌。设备在线时，会把设备的ip、接入主机、id存入redis，可读，可重新设置超时时间，当设备离线时从redis中删除。令牌的话就很简单，生成token，存入redis，并返回生成的token；验证token，就用id从redis中取出来比较，成功了再给token续时间。</p>
 <p><strong>etcd:</strong> 在server实现内使用。由于上述业务层4种服务以及接入层的2种服务都是基于server，而每个server实例又包含一个或多个tcp server、rpc server、http server，因此使用了etcd对server包含的每个子server进行了管理。etcd是键值存储的，子server的键为{etcd前缀+server名+子server的Flag+”/“+子server的addr}，值为子server的addr，实效时间为90秒。在server运行时，每1分钟对etcd循环一次，更新子server在etcd中的状态。每个子server通过其前缀被它的server有效管理起来。</p>
+<p>etcd用于服务的发现和配置。一种典型的情况是，每一个server都配有etcd服务，server在etcd中的kv数据库中注册存储，每个etcd都串联起来形成etcd集群，通过raft算法保持数据的一致性，在整个etcd的集群中处理server的添加运行故障等情况。</p>
 <p><strong>nsq:</strong> 仅存在于文档里。</p>
 <p><strong>ELK:</strong> 同上。</p>
 <h1 id="u603B_u603B_u7ED3"><a href="#u603B_u603B_u7ED3" class="headerlink" title="总总结"></a>总总结</h1><p>本文只着重关注了PandoCloud项目对物联网在存储方面的处理，因此对以下四方面并没有着重分析：</p>
@@ -227,6 +228,14 @@
 	
 <nav class="article-nav clearfix">
  
+ <div class="prev" >
+ <a href="/2016/05/06/from-Byzantinefailure-to-etcd/" title="从拜占庭将军问题到一致性算法到etcd">
+  <strong>上一篇：</strong><br/>
+  <span>
+  从拜占庭将军问题到一致性算法到etcd</span>
+</a>
+</div>
+
 
 <div class="next">
 <a href="/2016/04/18/martini-source-code/"  title="Martini框架源码解剖">
@@ -263,7 +272,7 @@
 		<ul>
 		
 		  
-			<li><a href="/categories/blog/" title="blog">blog<sup>4</sup></a></li>
+			<li><a href="/categories/blog/" title="blog">blog<sup>6</sup></a></li>
 		  
 		
 		  
@@ -280,11 +289,19 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/Go/" title="Go">Go<sup>4</sup></a></li>
+				<li><a href="/tags/Go/" title="Go">Go<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>2</sup></a></li>
 			
 		
 			
 				<li><a href="/tags/Web/" title="Web">Web<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/分布式/" title="分布式">分布式<sup>1</sup></a></li>
 			
 		
 			
@@ -296,7 +313,7 @@
 			
 		
 			
-				<li><a href="/tags/算法/" title="算法">算法<sup>1</sup></a></li>
+				<li><a href="/tags/docker/" title="docker">docker<sup>1</sup></a></li>
 			
 		
 		</ul>
