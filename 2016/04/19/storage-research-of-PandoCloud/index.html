@@ -25,6 +25,7 @@
 <meta name="twitter:title" content="对PandoCloud的数据存储的研究">
 <meta name="twitter:description" content="介绍PandoCloud是由国内一家公司主导开发的开源项目，用于管理大量数据的物联网，并形成一个云平台。
 本文来研究PandoCloud项目存储和运用海量物联网数据的思路和技巧。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/PandoCloud/pando-cloud/master/docs/img/architecture.jpeg">
 
     
     <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
@@ -36,7 +37,7 @@
     <link rel="apple-touch-icon" href="/img/jacman.jpg">
     <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
     
-    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
   <body>
@@ -48,7 +49,7 @@
 				<h1 class="site-name"><a href="/" title="Invoker&#39;s 鱼食罐">Invoker&#39;s 鱼食罐</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -64,7 +65,7 @@
  					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
 						<input type="hidden" name="q" value="site:yoursite.com">
 					</form>
 					
@@ -87,14 +88,14 @@
 		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
 		
   <p class="article-time">
-    <time datetime="2016-04-19T08:46:49.000Z" itemprop="datePublished"> 發表於 2016-04-19</time>
+    <time datetime="2016-04-19T08:46:49.000Z" itemprop="datePublished"> Published 2016-04-19</time>
     
   </p>
 </header>
 	<div class="article-content">
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目錄</strong>
+			<strong class="toc-title">Contents</strong>
 		
 			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u4E00_u4E0B_u4E1A_u52A1_u5C42_u548C_u63A5_u5165_u5C42_u4E2D_u7684_u7F51_u7EDC_u670D_u52A1"><span class="toc-number"></span> <span class="toc-text">总结一下业务层和接入层中的网络服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u8BE5_u9879_u76EE_u7684_u5404_u4E2A_u5B58_u50A8_u548C_u7F13_u5B58_u7684_u8FD0_u7528"><span class="toc-number"></span> <span class="toc-text">总结该项目的各个存储和缓存的运用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u603B_u7ED3"><span class="toc-number"></span> <span class="toc-text">总总结</span></a>
 		
@@ -206,7 +207,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/Database/">Database</a><a href="/tags/Go/">Go</a>
+  <span></span> <a href="/tags/Go/">Go</a><a href="/tags/Database/">Database</a>
   </div>
 
 </div>
@@ -250,17 +251,17 @@
 	
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目錄</strong>
+  <strong class="toc-title">Contents</strong>
  
  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u7CFB_u7EDF_u7ED3_u6784"><span class="toc-number">2.</span> <span class="toc-text">系统结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u4E1A_u52A1_u5C42"><span class="toc-number">3.</span> <span class="toc-text">业务层</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#controller"><span class="toc-number"></span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#apiprovider"><span class="toc-number"></span> <span class="toc-text">apiprovider</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#registry"><span class="toc-number"></span> <span class="toc-text">registry</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u4E00_u4E0B_u4E1A_u52A1_u5C42_u548C_u63A5_u5165_u5C42_u4E2D_u7684_u7F51_u7EDC_u670D_u52A1"><span class="toc-number"></span> <span class="toc-text">总结一下业务层和接入层中的网络服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u7ED3_u8BE5_u9879_u76EE_u7684_u5404_u4E2A_u5B58_u50A8_u548C_u7F13_u5B58_u7684_u8FD0_u7528"><span class="toc-number"></span> <span class="toc-text">总结该项目的各个存储和缓存的运用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u603B_u603B_u7ED3"><span class="toc-number"></span> <span class="toc-text">总总结</span></a>
  
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 
   
@@ -268,11 +269,11 @@
 
   
 <div class="categorieslist">
-	<p class="asidetitle">分類</p>
+	<p class="asidetitle">Categories</p>
 		<ul>
 		
 		  
-			<li><a href="/categories/blog/" title="blog">blog<sup>6</sup></a></li>
+			<li><a href="/categories/blog/" title="blog">blog<sup>12</sup></a></li>
 		  
 		
 		  
@@ -285,8 +286,12 @@
 
   
 <div class="tagslist">
-	<p class="asidetitle">標簽</p>
+	<p class="asidetitle">Tags</p>
 		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/docker/" title="docker">docker<sup>7</sup></a></li>
+			
 		
 			
 				<li><a href="/tags/Go/" title="Go">Go<sup>5</sup></a></li>
@@ -305,15 +310,11 @@
 			
 		
 			
-				<li><a href="/tags/Database/" title="Database">Database<sup>1</sup></a></li>
-			
-		
-			
 				<li><a href="/tags/杂谈/" title="杂谈">杂谈<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/docker/" title="docker">docker<sup>1</sup></a></li>
+				<li><a href="/tags/Database/" title="Database">Database<sup>1</sup></a></li>
 			
 		
 		</ul>
@@ -321,7 +322,7 @@
 
 
   <div class="linkslist">
-  <p class="asidetitle">友情鏈接</p>
+  <p class="asidetitle">Links</p>
     <ul>
         
     </ul>
@@ -331,11 +332,11 @@
 
 
   <div class="rsspart">
-	<a href="/atom.xml" target="_blank" title="rss">RSS 訂閱</a>
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
 </div>
 
   <div class="weiboshow">
-  <p class="asidetitle">新浪微博</p>
+  <p class="asidetitle">Weibo</p>
     <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
 </div>
 
@@ -372,7 +373,7 @@
 		
 
 		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
 		
 		<a href="/about" target="_blank" title="Invoker">Invoker</a>
 		
@@ -560,7 +561,7 @@ var _hmt = _hmt || [];
 <!-- Totop Begin -->
 
 	<div id="totop">
-	<a title="返回頂部"><img src="/img/scrollup.png"/></a>
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
 	</div>
 	<script src="/js/totop.js"></script>
 

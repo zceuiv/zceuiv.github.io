@@ -1,0 +1,528 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>docker_tutorial_3 | Invoker&#39;s 鱼食罐</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Invoker">
+    
+
+    
+    <meta name="description" content="2.3 服务准备工作
+
+Docker1.13或以上版本。
+Docker Compose。Docker for Mac和Docker for Windows已经预安装。
+学习了教程1和教程2。
+确保公开了教程2中的friendlyhello镜像。
+确定你的镜像能够作为一个容器工作。先运行docker run -p 80:80 username/repo:tag然后访问http://localhost">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker_tutorial_3">
+<meta property="og:url" content="http://yoursite.com/2018/03/12/docker-tutorial-3/index.html">
+<meta property="og:site_name" content="Invoker's 鱼食罐">
+<meta property="og:description" content="2.3 服务准备工作
+
+Docker1.13或以上版本。
+Docker Compose。Docker for Mac和Docker for Windows已经预安装。
+学习了教程1和教程2。
+确保公开了教程2中的friendlyhello镜像。
+确定你的镜像能够作为一个容器工作。先运行docker run -p 80:80 username/repo:tag然后访问http://localhost">
+<meta property="og:updated_time" content="2018-03-12T08:59:35.589Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker_tutorial_3">
+<meta name="twitter:description" content="2.3 服务准备工作
+
+Docker1.13或以上版本。
+Docker Compose。Docker for Mac和Docker for Windows已经预安装。
+学习了教程1和教程2。
+确保公开了教程2中的friendlyhello镜像。
+确定你的镜像能够作为一个容器工作。先运行docker run -p 80:80 username/repo:tag然后访问http://localhost">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon_bottle.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Invoker&#39;s 鱼食罐">Invoker&#39;s 鱼食罐</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/03/12/docker-tutorial-3/" title="docker_tutorial_3" itemprop="url">docker_tutorial_3</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
+		
+  <p class="article-time">
+    <time datetime="2018-03-12T07:55:34.000Z" itemprop="datePublished"> Published 2018-03-12</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3__u670D_u52A1"><span class="toc-number">1.</span> <span class="toc-text">2.3 服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u51C6_u5907_u5DE5_u4F5C"><span class="toc-number">1.1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.2.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5173_u4E8E_u670D_u52A1"><span class="toc-number">1.3.</span> <span class="toc-text">关于服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u4F60_u7684_u7B2C_u4E00_u4E2Adocker-compose-yml_u6587_u4EF6"><span class="toc-number">1.4.</span> <span class="toc-text">你的第一个docker-compose.yml文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u8FD0_u884C_u4F60_u7684_u65B0_u8D1F_u8F7D_u5747_u8861_u7A0B_u5E8F"><span class="toc-number">1.5.</span> <span class="toc-text">运行你的新负载均衡程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6269_u5C55_u5E94_u7528_u7A0B_u5E8F"><span class="toc-number">1.6.</span> <span class="toc-text">扩展应用程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5173_u6389app_u548Cswarm"><span class="toc-number">1.7.</span> <span class="toc-text">关掉app和swarm</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h2 id="2-3__u670D_u52A1"><a href="#2-3__u670D_u52A1" class="headerlink" title="2.3 服务"></a>2.3 服务</h2><h3 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h3><blockquote>
+<ul>
+<li>Docker1.13或以上版本。</li>
+<li><a href="https://docs.docker.com/compose/overview/" target="_blank" rel="external">Docker Compose</a>。Docker for Mac和Docker for Windows已经预安装。</li>
+<li>学习了教程1和教程2。</li>
+<li>确保公开了教程2中的<code>friendlyhello</code>镜像。</li>
+<li>确定你的镜像能够作为一个容器工作。先运行<code>docker run -p 80:80 username/repo:tag</code>然后访问<code>http://localhost/</code>。</li>
+</ul>
+</blockquote>
+<h3 id="u4ECB_u7ECD"><a href="#u4ECB_u7ECD" class="headerlink" title="介绍"></a>介绍</h3><h3 id="u5173_u4E8E_u670D_u52A1"><a href="#u5173_u4E8E_u670D_u52A1" class="headerlink" title="关于服务"></a>关于服务</h3><p>分布式应用程序中，程序中不同的部分被称为服务。例如，如果做一个视频分享网站，可能会划分存储为一个服务，后台上传视频并转码为一个服务，前端为一个服务，等等。</p>
+<p>Services其实就是“containers in production.”一个服务只运行一个镜像，但是它规范容器运行的方式：应该用哪个端口，运行多少份容器的复制，等等。扩展一个服务改变容器实例运行的数量、分配计算资源给那个服务。</p>
+<h3 id="u4F60_u7684_u7B2C_u4E00_u4E2Adocker-compose-yml_u6587_u4EF6"><a href="#u4F60_u7684_u7B2C_u4E00_u4E2Adocker-compose-yml_u6587_u4EF6" class="headerlink" title="你的第一个docker-compose.yml文件"></a>你的第一个<code>docker-compose.yml</code>文件</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="attr">version:</span> <span class="string">"3"</span></div><div class="line"><span class="attr">services:</span></div><div class="line"><span class="attr">  web:</span></div><div class="line">    <span class="comment"># replace username/repo:tag with your name and image details</span></div><div class="line"><span class="attr">    image:</span> username/repo:tag</div><div class="line"><span class="attr">    deploy:</span></div><div class="line"><span class="attr">      replicas:</span> <span class="number">5</span></div><div class="line"><span class="attr">      resources:</span></div><div class="line"><span class="attr">        limits:</span></div><div class="line"><span class="attr">          cpus:</span> <span class="string">"0.1"</span></div><div class="line"><span class="attr">          memory:</span> <span class="number">50</span>M</div><div class="line"><span class="attr">      restart_policy:</span></div><div class="line"><span class="attr">        condition:</span> on-failure</div><div class="line"><span class="attr">    ports:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"80:80"</span></div><div class="line"><span class="attr">    networks:</span></div><div class="line"><span class="bullet">      -</span> webnet</div><div class="line"><span class="attr">networks:</span></div><div class="line"><span class="attr">  webnet:</span></div></pre></td></tr></table></figure>
+<p>这个<code>docker-compose.yml</code>文件告诉Docker做如下事情：</p>
+<blockquote>
+<ul>
+<li>拉取镜像。</li>
+<li>运行那个镜像的5个实例作为一个服务，命名为<code>web</code>，限制每一个实例最多10%的CPU(按所有核心算)和50MB内存。</li>
+<li>当某个容器宕掉时立刻重启它。</li>
+<li>映射主机80端口到<code>web</code>服务的80端口。</li>
+<li>使所有<code>web</code>服务的容器共享80端口，通过一个负载均衡的网络，命名为<code>webnet</code>。</li>
+<li>使用默认设置定义<code>webnet</code>网络(负载均衡的覆盖网络)。</li>
+</ul>
+</blockquote>
+<h3 id="u8FD0_u884C_u4F60_u7684_u65B0_u8D1F_u8F7D_u5747_u8861_u7A0B_u5E8F"><a href="#u8FD0_u884C_u4F60_u7684_u65B0_u8D1F_u8F7D_u5747_u8861_u7A0B_u5E8F" class="headerlink" title="运行你的新负载均衡程序"></a>运行你的新负载均衡程序</h3><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker swarm init</div><div class="line"><span class="variable">$ </span>docker stack deploy -c docker-compose.yml getstartedlab</div><div class="line"><span class="variable">$ </span>docker service ls</div><div class="line"><span class="variable">$ </span>docker service ps getstartedlab_web</div></pre></td></tr></table></figure>
+<h3 id="u6269_u5C55_u5E94_u7528_u7A0B_u5E8F"><a href="#u6269_u5C55_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="扩展应用程序"></a>扩展应用程序</h3><p>你可以修改<code>docker-compose.yml</code>文件中的<code>replicas</code>的值，保存然后重新运行<code>docker stack deploy</code>命令：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose<span class="selector-class">.yml</span> getstartedlab</div></pre></td></tr></table></figure></p>
+<p>Docker会进行热升级，无需先关掉stack或者关掉任何容器。</p>
+<h3 id="u5173_u6389app_u548Cswarm"><a href="#u5173_u6389app_u548Cswarm" class="headerlink" title="关掉app和swarm"></a>关掉app和swarm</h3><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker stack rm getstartedlab</div><div class="line"><span class="variable">$ </span>docker swarm leave --force</div></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/blog/">blog</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/docker/">docker</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2018/03/12/docker-tutorial-3/" data-title="docker_tutorial_3 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2018/03/12/docker-tutorial-4/" title="docker_tutorial_4">
+  <strong>上一篇：</strong><br/>
+  <span>
+  docker_tutorial_4</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2018/03/12/docker-tutorial-2/"  title="docker_tutorial_2">
+ <strong>下一篇：</strong><br/> 
+ <span>docker_tutorial_2
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3__u670D_u52A1"><span class="toc-number">1.</span> <span class="toc-text">2.3 服务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u51C6_u5907_u5DE5_u4F5C"><span class="toc-number">1.1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u4ECB_u7ECD"><span class="toc-number">1.2.</span> <span class="toc-text">介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5173_u4E8E_u670D_u52A1"><span class="toc-number">1.3.</span> <span class="toc-text">关于服务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u4F60_u7684_u7B2C_u4E00_u4E2Adocker-compose-yml_u6587_u4EF6"><span class="toc-number">1.4.</span> <span class="toc-text">你的第一个docker-compose.yml文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u8FD0_u884C_u4F60_u7684_u65B0_u8D1F_u8F7D_u5747_u8861_u7A0B_u5E8F"><span class="toc-number">1.5.</span> <span class="toc-text">运行你的新负载均衡程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6269_u5C55_u5E94_u7528_u7A0B_u5E8F"><span class="toc-number">1.6.</span> <span class="toc-text">扩展应用程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5173_u6389app_u548Cswarm"><span class="toc-number">1.7.</span> <span class="toc-text">关掉app和swarm</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/blog/" title="blog">blog<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/patch/" title="patch">patch<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/docker/" title="docker">docker<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Go/" title="Go">Go<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Web/" title="Web">Web<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/分布式/" title="分布式">分布式<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/杂谈/" title="杂谈">杂谈<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Database/" title="Database">Database<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Welcome to my page. <br/>
+			This is the place I feed myself. Enjoy it!</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
+		
+		<a href="/about" target="_blank" title="Invoker">Invoker</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

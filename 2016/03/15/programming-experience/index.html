@@ -32,7 +32,7 @@
     <link rel="apple-touch-icon" href="/img/jacman.jpg">
     <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
     
-    <link rel="stylesheet" href="/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
   <body>
@@ -44,7 +44,7 @@
 				<h1 class="site-name"><a href="/" title="Invoker&#39;s 鱼食罐">Invoker&#39;s 鱼食罐</a></h1>
 				<h2 class="blog-motto"></h2>
 			</div>
-			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
 			</a></div>
 			<nav class="animated">
 				<ul>
@@ -60,7 +60,7 @@
  					
 					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
 						<label>Search</label>
-						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
 						<input type="hidden" name="q" value="site:yoursite.com">
 					</form>
 					
@@ -83,14 +83,14 @@
 		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
 		
   <p class="article-time">
-    <time datetime="2016-03-15T07:37:16.000Z" itemprop="datePublished"> 發表於 2016-03-15</time>
+    <time datetime="2016-03-15T07:37:16.000Z" itemprop="datePublished"> Published 2016-03-15</time>
     
   </p>
 </header>
 	<div class="article-content">
 		
 		<div id="toc" class="toc-article">
-			<strong class="toc-title">文章目錄</strong>
+			<strong class="toc-title">Contents</strong>
 		
 			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Rails_u7684_u547D_u540D_u7EA6_u5B9A"><span class="toc-number">1.</span> <span class="toc-text">Rails的命名约定</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u6DF7_u5408_u5927_u5C0F_u5199_uFF0C_u4E0B_u5212_u7EBF_uFF0C_u590D_u6570"><span class="toc-number"></span> <span class="toc-text">混合大小写，下划线，复数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u628A_u63A7_u5236_u5668_uFF08controller_uFF09_u5206_u7EC4_u5230_u6A21_u5757_u4E2D"><span class="toc-number"></span> <span class="toc-text">把控制器（controller）分组到模块中</span></a>
 		
@@ -99,8 +99,8 @@
 		<p>本篇纪录我的一些零碎。<br><a id="more"></a></p>
 <h2 id="Rails_u7684_u547D_u540D_u7EA6_u5B9A"><a href="#Rails_u7684_u547D_u540D_u7EA6_u5B9A" class="headerlink" title="Rails的命名约定"></a>Rails的命名约定</h2><p>今天在使用postgresql的一个golang驱动遇到了一个问题，它用一种默认的命名规则来做ORM。我一个struct命名为”user_relationship”，在pg中对应的表名也为”user_relationship”，此时用go-pg包的db.Model()函数无法从数据库内访问该表。</p>
 <p>我观察go-pg包的说明文档，以及postgresql的一些教程，发现里面大多把表名定义为复数形式。尤其在go-pg的orm设计里，写得非常清楚。</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.Model(&amp;books).Columns(<span class="string">"book.*"</span>, <span class="string">"Author"</span>).Limit(<span class="number">100</span>).Select()</span><br></pre></td></tr></table></figure>
-<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="operator"><span class="keyword">SELECT</span> <span class="string">"book"</span>.*, <span class="string">"author"</span>.<span class="string">"id"</span> <span class="keyword">AS</span> <span class="string">"author__id"</span>, <span class="string">"author"</span>.<span class="string">"name"</span> <span class="keyword">AS</span> <span class="string">"author__name"</span></span><br><span class="line"><span class="keyword">FROM</span> <span class="string">"books"</span> <span class="keyword">AS</span> <span class="string">"book"</span>, <span class="string">"authors"</span> <span class="keyword">AS</span> <span class="string">"author"</span></span><br><span class="line"><span class="keyword">WHERE</span> <span class="string">"author"</span>.<span class="string">"id"</span> = <span class="string">"books"</span>.<span class="string">"author_id"</span></span><br><span class="line"><span class="keyword">LIMIT</span> <span class="number">100</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.Model(&amp;books).Columns(<span class="string">"book.*"</span>, <span class="string">"Author"</span>).Limit(<span class="number">100</span>).Select()</div></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> <span class="string">"book"</span>.*, <span class="string">"author"</span>.<span class="string">"id"</span> <span class="keyword">AS</span> <span class="string">"author__id"</span>, <span class="string">"author"</span>.<span class="string">"name"</span> <span class="keyword">AS</span> <span class="string">"author__name"</span></div><div class="line"><span class="keyword">FROM</span> <span class="string">"books"</span> <span class="keyword">AS</span> <span class="string">"book"</span>, <span class="string">"authors"</span> <span class="keyword">AS</span> <span class="string">"author"</span></div><div class="line"><span class="keyword">WHERE</span> <span class="string">"author"</span>.<span class="string">"id"</span> = <span class="string">"books"</span>.<span class="string">"author_id"</span></div><div class="line"><span class="keyword">LIMIT</span> <span class="number">100</span></div></pre></td></tr></table></figure>
 <p>然后我另外创建了一个表名叫”user_relationships”，并且重新定义了一个”UserRelationship”结构，然后再调用go-pg包中的函数，可以正常访问了。</p>
 <p>我想起了Rails的设计，它采用了某些约定俗成的命名方式，于是我去把它找来贴在这里。</p>
 <h1 id="u6DF7_u5408_u5927_u5C0F_u5199_uFF0C_u4E0B_u5212_u7EBF_uFF0C_u590D_u6570"><a href="#u6DF7_u5408_u5927_u5C0F_u5199_uFF0C_u4E0B_u5212_u7EBF_uFF0C_u590D_u6570" class="headerlink" title="混合大小写，下划线，复数"></a>混合大小写，下划线，复数</h1><p>我们经常使用简写命名变量，在Ruby中，约定为命名变量时，全部字母都小写，单词的中间使用下划线分割，类(Class)和Modules的命名有不同，不使用下划线，单词的简写和首字母使用大写。所以我们在前面编写的代码里有order_status和LineItem这样的类名。</p>
@@ -129,15 +129,15 @@
 </blockquote>
 <p>通常在ruby的代码中，我们使用require关键字来将一些文件中的类引入到当前的代码中，因为Rails知道文件名和类名之间的关系，所以require关键字在Rails程序中不是必须的，在你引用一个不知道名字的类或者module的时候，Ruby on Rails命名约定将类名转换成文件名，并且加载这个文件，效果就象你通过名字引用一个model，然后这个model自动被加载到程序中。</p>
 <p>就象你所看到的，这个模式在类被存储到session中时被打破了，在这种情况下我们要明确的声明他们，例如，我们在控制器（controller）里：</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StoreController</span> </span></span><br><span class="line">&lt; <span class="constant">ApplicationController</span> </span><br><span class="line">model <span class="symbol">:line_item</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">StoreController</span> </span></div><div class="line">&lt; ApplicationController </div><div class="line">model <span class="symbol">:line_item</span></div></pre></td></tr></table></figure>
 <p>在这里，命名规约还在使用，标记：line_item全部小写并且用下划线分开，这会使line_item.rb文件被加载，而这个文件中包含有类LineItem。</p>
 <h1 id="u628A_u63A7_u5236_u5668_uFF08controller_uFF09_u5206_u7EC4_u5230_u6A21_u5757_u4E2D"><a href="#u628A_u63A7_u5236_u5668_uFF08controller_uFF09_u5206_u7EC4_u5230_u6A21_u5757_u4E2D" class="headerlink" title="把控制器（controller）分组到模块中"></a>把控制器（controller）分组到模块中</h1><p>现在，我们的所有的controller都放在app/controller目录下，有时候我们的controller可能比较多，为了不污染到顶层的命名空间（namespace）,我们可以选择将某几个controller归组到一个单独的命名空间里。</p>
 <p>对此，Rails有一个简单的约定，如果一个请求（request）包括了controller的名字，例如：admin/book，Rails会在app/controller/admin/目录下寻找名为book_controller的控制器，控制器名字的最后部分将会变换成name_controller.rb，并且将会从app/controller目录开始，根据请求的前半部分（这里是admin）来定位到子目录里。</p>
 <p>想像一下我们的程序有这样的两组controller，admin/xxx，content/xxx，并且两组里面都有一个控制器book，这样在app/controller目录的两个子目录app/controller/admin和app/controller/content里都有一个book_controller.rb文件，里面又都有类BookController，如果Rails不作额外处理，将会造成冲突。</p>
 <p>为了处理这种情况，Rails采取的办法是，在这两组controller的目录里的book_controller.rb文件中类的声明前添加控制器所在组的名字，例如，admin目录里的book_controller.rb文件中的类声明是这样：</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Admin::BookController</span> </span></span><br><span class="line">&lt; <span class="constant">ApplicationController</span> </span><br><span class="line"><span class="comment"># ...  </span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Admin::BookController</span> </span></div><div class="line">&lt; ApplicationController </div><div class="line"><span class="comment"># ...  </span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>而content目录下的类声明是这样：</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Content::BookController</span></span></span><br><span class="line"> &lt; <span class="constant">ApplicationController</span> </span><br><span class="line"><span class="comment"># ...  </span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Content::BookController</span></span></div><div class="line"> &lt; ApplicationController </div><div class="line"><span class="comment"># ...  </span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 <p>这样，两个book_controller就可以被区分开了。</p>
 <p>在web浏览器里对controller发出请求时，这样：</p>
 <p><a href="http://my.app/admin/book" target="_blank" rel="external">http://my.app/admin/book</a></p>
@@ -200,17 +200,17 @@
 	
 
 </div>  
-      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
-  <strong class="toc-title">文章目錄</strong>
+  <strong class="toc-title">Contents</strong>
  
  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Rails_u7684_u547D_u540D_u7EA6_u5B9A"><span class="toc-number">1.</span> <span class="toc-text">Rails的命名约定</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u6DF7_u5408_u5927_u5C0F_u5199_uFF0C_u4E0B_u5212_u7EBF_uFF0C_u590D_u6570"><span class="toc-number"></span> <span class="toc-text">混合大小写，下划线，复数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#u628A_u63A7_u5236_u5668_uFF08controller_uFF09_u5206_u7EC4_u5230_u6A21_u5757_u4E2D"><span class="toc-number"></span> <span class="toc-text">把控制器（controller）分组到模块中</span></a>
  
   </div>
 
 <div id="asidepart">
-<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
 <aside class="clearfix">
 
   
@@ -218,11 +218,11 @@
 
   
 <div class="categorieslist">
-	<p class="asidetitle">分類</p>
+	<p class="asidetitle">Categories</p>
 		<ul>
 		
 		  
-			<li><a href="/categories/blog/" title="blog">blog<sup>6</sup></a></li>
+			<li><a href="/categories/blog/" title="blog">blog<sup>12</sup></a></li>
 		  
 		
 		  
@@ -235,8 +235,12 @@
 
   
 <div class="tagslist">
-	<p class="asidetitle">標簽</p>
+	<p class="asidetitle">Tags</p>
 		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/docker/" title="docker">docker<sup>7</sup></a></li>
+			
 		
 			
 				<li><a href="/tags/Go/" title="Go">Go<sup>5</sup></a></li>
@@ -255,15 +259,11 @@
 			
 		
 			
-				<li><a href="/tags/Database/" title="Database">Database<sup>1</sup></a></li>
-			
-		
-			
 				<li><a href="/tags/杂谈/" title="杂谈">杂谈<sup>1</sup></a></li>
 			
 		
 			
-				<li><a href="/tags/docker/" title="docker">docker<sup>1</sup></a></li>
+				<li><a href="/tags/Database/" title="Database">Database<sup>1</sup></a></li>
 			
 		
 		</ul>
@@ -271,7 +271,7 @@
 
 
   <div class="linkslist">
-  <p class="asidetitle">友情鏈接</p>
+  <p class="asidetitle">Links</p>
     <ul>
         
     </ul>
@@ -281,11 +281,11 @@
 
 
   <div class="rsspart">
-	<a href="/atom.xml" target="_blank" title="rss">RSS 訂閱</a>
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
 </div>
 
   <div class="weiboshow">
-  <p class="asidetitle">新浪微博</p>
+  <p class="asidetitle">Weibo</p>
     <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
 </div>
 
@@ -322,7 +322,7 @@
 		
 
 		<p class="copyright">
-		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2016 
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
 		
 		<a href="/about" target="_blank" title="Invoker">Invoker</a>
 		
@@ -510,7 +510,7 @@ var _hmt = _hmt || [];
 <!-- Totop Begin -->
 
 	<div id="totop">
-	<a title="返回頂部"><img src="/img/scrollup.png"/></a>
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
 	</div>
 	<script src="/js/totop.js"></script>
 

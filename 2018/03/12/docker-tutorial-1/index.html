@@ -4,23 +4,62 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>对付拖延症，最好的方法就是开始去做 | Invoker&#39;s 鱼食罐</title>
+    <title>docker_tutorial_1 | Invoker&#39;s 鱼食罐</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Invoker">
     
 
     
-    <meta name="description" content="这是我的博客，这是我的第一篇博文，希望我能好好经营下去。">
+    <meta name="description" content="2.1 基本结构概念docker是一个使用容器的平台，为开发者和系统管理员提供开发、部署、运行应用程序的便利。docker是一种容器化工具，容器化的流行得益于以下几个原因：
+
+
+灵活
+轻量级
+可交换的: 线上部署更新升级
+便携
+可扩展
+纵向堆叠
+
+
+镜像与容器镜像是一个可运行的包，包含了所有运行一个应用程序需要的东西，包括代码、运行时、库、环境变量以及配置文件。
+容器是镜像的实例，是镜像执行时">
 <meta property="og:type" content="article">
-<meta property="og:title" content="对付拖延症，最好的方法就是开始去做">
-<meta property="og:url" content="http://yoursite.com/2016/03/04/introduction/index.html">
+<meta property="og:title" content="docker_tutorial_1">
+<meta property="og:url" content="http://yoursite.com/2018/03/12/docker-tutorial-1/index.html">
 <meta property="og:site_name" content="Invoker's 鱼食罐">
-<meta property="og:description" content="这是我的博客，这是我的第一篇博文，希望我能好好经营下去。">
-<meta property="og:updated_time" content="2016-03-04T04:07:35.000Z">
+<meta property="og:description" content="2.1 基本结构概念docker是一个使用容器的平台，为开发者和系统管理员提供开发、部署、运行应用程序的便利。docker是一种容器化工具，容器化的流行得益于以下几个原因：
+
+
+灵活
+轻量级
+可交换的: 线上部署更新升级
+便携
+可扩展
+纵向堆叠
+
+
+镜像与容器镜像是一个可运行的包，包含了所有运行一个应用程序需要的东西，包括代码、运行时、库、环境变量以及配置文件。
+容器是镜像的实例，是镜像执行时">
+<meta property="og:image" content="http://yoursite.com/../../images/Container@2x.png">
+<meta property="og:image" content="http://yoursite.com/../../images/VM@2x.png">
+<meta property="og:updated_time" content="2018-03-12T09:01:53.313Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="对付拖延症，最好的方法就是开始去做">
-<meta name="twitter:description" content="这是我的博客，这是我的第一篇博文，希望我能好好经营下去。">
+<meta name="twitter:title" content="docker_tutorial_1">
+<meta name="twitter:description" content="2.1 基本结构概念docker是一个使用容器的平台，为开发者和系统管理员提供开发、部署、运行应用程序的便利。docker是一种容器化工具，容器化的流行得益于以下几个原因：
+
+
+灵活
+轻量级
+可交换的: 线上部署更新升级
+便携
+可扩展
+纵向堆叠
+
+
+镜像与容器镜像是一个可运行的包，包含了所有运行一个应用程序需要的东西，包括代码、运行时、库、环境变量以及配置文件。
+容器是镜像的实例，是镜像执行时">
+<meta name="twitter:image" content="http://yoursite.com/../../images/Container@2x.png">
 
     
     <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
@@ -76,14 +115,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/03/04/introduction/" title="对付拖延症，最好的方法就是开始去做" itemprop="url">对付拖延症，最好的方法就是开始去做</a>
+      <a href="/2018/03/12/docker-tutorial-1/" title="docker_tutorial_1" itemprop="url">docker_tutorial_1</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
 		
   <p class="article-time">
-    <time datetime="2016-03-04T02:52:53.000Z" itemprop="datePublished"> Published 2016-03-04</time>
+    <time datetime="2018-03-12T07:24:07.000Z" itemprop="datePublished"> Published 2018-03-12</time>
     
   </p>
 </header>
@@ -92,41 +131,28 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
 		
-			
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1__u57FA_u672C_u7ED3_u6784"><span class="toc-number">1.</span> <span class="toc-text">2.1 基本结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u6982_u5FF5"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u955C_u50CF_u4E0E_u5BB9_u5668"><span class="toc-number">1.2.</span> <span class="toc-text">镜像与容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u955C_u50CF_u4E0E_u865A_u62DF_u673A"><span class="toc-number">1.3.</span> <span class="toc-text">镜像与虚拟机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u51C6_u5907_u4F60_u7684Docker_u73AF_u5883"><span class="toc-number">1.4.</span> <span class="toc-text">准备你的Docker环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6D4B_u8BD5Docker_08_u7248_u672C"><span class="toc-number">1.5.</span> <span class="toc-text">测试Docker版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6D4B_u8BD5Docker_u5B89_u88C5"><span class="toc-number">1.6.</span> <span class="toc-text">测试Docker安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u603B_u7ED3_u548C_u79D8_u7C4D_u5217_u8868"><span class="toc-number">1.7.</span> <span class="toc-text">总结和秘籍列表</span></a></li></ol></li></ol>
 		
 		</div>
 		
-		<p>这是我的博客，这是我的第一篇博文，希望我能好好经营下去。<br><a id="more"></a></p>
-<p>这个博客年前就想要搭建，一直拖到了现在。2月份一共29天大多在学golang，忽视了前面的node，当然也忽视了hexo和gitblog(说的就好像我已经用node解析了一遍hexo一样)。</p>
-<p>来到了3月份，步入了轰轰烈烈的跳槽季升职季，我还没来得及辞职了，招我进来的总监和SE倒是前后脚都要走了，我挺着急的。</p>
-<p>其实阿帕比的技术储备挺不错的，比我之前那家几乎毫无技术的单位(褒贬人就不要指名道姓了)强不少，如果我能踏踏实实在这里学一些做一些，我也会收获不少的。</p>
-<p><strong>可我踏实不下来。</strong></p>
-<p>我一直对别人这样讲，阿帕比的技术强，业务好，做自然语言处理，做加密，做版权控制，做出版业务，做图书平台，上下游都很通畅，和微软合作密切，技术支持好，行业内知名度也高。</p>
-<p><strong>为什么想要走呢？</strong></p>
+		<h2 id="2-1__u57FA_u672C_u7ED3_u6784"><a href="#2-1__u57FA_u672C_u7ED3_u6784" class="headerlink" title="2.1 基本结构"></a>2.1 基本结构</h2><h3 id="u6982_u5FF5"><a href="#u6982_u5FF5" class="headerlink" title="概念"></a>概念</h3><p>docker是一个使用容器的平台，为开发者和系统管理员提供<strong>开发、部署、运行</strong>应用程序的便利。docker是一种容器化工具，容器化的流行得益于以下几个原因：</p>
 <blockquote>
 <ul>
-<li>公司的最新技术和发展方向是自然语言分析，是人工智能，我接触不到</li>
-<li>公司的核心技术是资源版权管理与加密，是资源的分布式存储与应用，我接触不到</li>
-<li>公司的明星产品是Apabi Reader，我接触不到</li>
-<li>我所接触到的产品是一个资源管理平台，是一个网站</li>
-<li>并且我做工作不是对公司的在线网站，而是交付用户使用的网站</li>
-<li>并且又是一个定制的工作(就是在原有产品上随便改吧改吧卖钱的二次开发)</li>
+<li>灵活</li>
+<li>轻量级</li>
+<li>可交换的: 线上部署更新升级</li>
+<li>便携</li>
+<li>可扩展</li>
+<li>纵向堆叠</li>
 </ul>
 </blockquote>
-<p><strong>并且最重要的一点，我的工作仍是.NET的！</strong></p>
-<p>直到半年前我仍对.NET抱有幻想，当时在面世纪华纳的时候我还想要做wpf做什么什么的，当时许多概念如同mvc、路由、web、http等乱七八糟的都没完全闹清，唯一想要的只是坚持.NET，因为我喜欢c#的面向对象设计，喜欢.NET的完备解决方案，喜欢微软给出的严谨的文档和严谨的平台语言设计。但是没有用，如今我硬着头皮剥离一切的曾经也要离.NET而去。</p>
-<p>其实不是.NET的错，而是环境的错，是人的错。程序员最强大的竞争力绝不是一招鲜吃遍天，而是孜孜不倦地学习，不断地累积经验，不断地掌握新技能，适应社会的发展，才能立于不败之地。而僵死地走在一条技术道路的，无论是.NET还是JAVA还是以后的任何blablabla，都会削弱程序员的竞争力，削弱公司的竞争力。</p>
-<p><strong>把话说的通俗通透一点，我就是想要高薪。</strong></p>
-<p>打开各大招聘网站，看看.NET的薪酬，看看企业JAVA开发的薪酬，1-3年经验的基本在8k－15k，再看看Android、IOS、Python、PHP、Node、Golang，同样经验的，起薪都是15k。</p>
-<p>另一方面来讲，高薪工作强度更高，但是能学到的东西也更多。而且比起我在三家做.NET的公司做的年龄加一块超过35岁的产品的二次开发，那些从头做起的新技术更有挑战性，更能让我学到一些更通用的开发技术的本质，同时更能符合互联网短平快的特征。</p>
-<p><strong>可我怎么来做？</strong></p>
-<p>就像标题说的，我这个人行动力比较差，爱拖延，爱懒惰。对一个强人来说，一边坐着.NET的二次开发工作一边自学别的内容应该是很容易的，可是对我来说，一个好的环境更能影响我带动我。</p>
-<p><strong>可是我投不上简历。</strong></p>
-<p>快把话题拉回来吧，开这个博客的目的，是想要督促自己学习新的技术，并且把心得po出来，与人分享交流，并且让自己的积累更加坚实，不再碎片。并且，未来可以把博客分享到微信公众号上，说不定能弄出个成功的自媒体呢？</p>
-<p>目前主要想走的技术仍是web技术，因为按目前看来，移动web很有可能又回逐渐取代移动app，就像桌面上b/s逐渐取代c/s一样。目前的微信公众号又是一个新颖的东西，让移动web的竞争力变得更强，更何况未来还会有微信应用号。</p>
-<p>目前最想要掌握扎实的语言是Golang和Node.js，不过其实如果倾向于Golang的话，纯做后端其实又离web开发远了一点了？矛盾了哈哈。</p>
-<p>无论如何，坚决地跳出.NET。矫枉需过正，脱离这个一潭死水的环境就要做的过分一些。</p>
-<p><strong>更何况，.NET怎么在我美美哒macbook上写呢？</strong></p>
+<h3 id="u955C_u50CF_u4E0E_u5BB9_u5668"><a href="#u955C_u50CF_u4E0E_u5BB9_u5668" class="headerlink" title="镜像与容器"></a>镜像与容器</h3><p><strong>镜像</strong>是一个可运行的包，包含了所有运行一个应用程序需要的东西，包括代码、运行时、库、环境变量以及配置文件。</p>
+<p><strong>容器</strong>是镜像的实例，是镜像执行时在内存中的样子，是带有状态或用户进程的镜像。</p>
+<h3 id="u955C_u50CF_u4E0E_u865A_u62DF_u673A"><a href="#u955C_u50CF_u4E0E_u865A_u62DF_u673A" class="headerlink" title="镜像与虚拟机"></a>镜像与虚拟机</h3><p><img src="/../../images/Container@2x.png" alt="Alt text"><br><img src="/../../images/VM@2x.png" alt="Alt text"></p>
+<h3 id="u51C6_u5907_u4F60_u7684Docker_u73AF_u5883"><a href="#u51C6_u5907_u4F60_u7684Docker_u73AF_u5883" class="headerlink" title="准备你的Docker环境"></a>准备你的Docker环境</h3><p>Docker for Mac版本17.12.0-ce Edge以上，Docker for Windows版本18.02.0-ce Edge以上，支持Kubernetes docker。</p>
+<h3 id="u6D4B_u8BD5Docker_08_u7248_u672C"><a href="#u6D4B_u8BD5Docker_08_u7248_u672C" class="headerlink" title="测试Docker版本"></a>测试Docker版本</h3><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker --version</div><div class="line"><span class="variable">$ </span>docker version</div><div class="line"><span class="variable">$ </span>docker info</div></pre></td></tr></table></figure>
+<h3 id="u6D4B_u8BD5Docker_u5B89_u88C5"><a href="#u6D4B_u8BD5Docker_u5B89_u88C5" class="headerlink" title="测试Docker安装"></a>测试Docker安装</h3><figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">$</span> docker run hello-world</div><div class="line"><span class="symbol">$</span> docker image ls</div><div class="line"><span class="symbol">$</span> docker container ls --<span class="keyword">all</span></div></pre></td></tr></table></figure>
+<h3 id="u603B_u7ED3_u548C_u79D8_u7C4D_u5217_u8868"><a href="#u603B_u7ED3_u548C_u79D8_u7C4D_u5217_u8868" class="headerlink" title="总结和秘籍列表"></a>总结和秘籍列表</h3><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">## <span class="keyword">List</span> Docker <span class="keyword">CLI</span> commands</div><div class="line">docker</div><div class="line">docker container --<span class="keyword">help</span></div><div class="line"></div><div class="line">## <span class="keyword">Display</span> Docker <span class="keyword">version</span> and info</div><div class="line">docker --<span class="keyword">version</span></div><div class="line">docker <span class="keyword">version</span></div><div class="line">docker info</div><div class="line"></div><div class="line">## Excecute Docker image</div><div class="line">docker <span class="keyword">run</span> hello-world</div><div class="line"></div><div class="line">## <span class="keyword">List</span> Docker images</div><div class="line">docker image <span class="keyword">ls</span></div><div class="line"></div><div class="line">## <span class="keyword">List</span> Docker containers (running, all, all <span class="keyword">in</span> quiet mode)</div><div class="line">docker container <span class="keyword">ls</span></div><div class="line">docker container <span class="keyword">ls</span> --all</div><div class="line">docker container <span class="keyword">ls</span> -a -<span class="built_in">q</span></div></pre></td></tr></table></figure>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -140,7 +166,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/杂谈/">杂谈</a>
+  <span></span> <a href="/tags/docker/">docker</a>
   </div>
 
 </div>
@@ -149,7 +175,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2016/03/04/introduction/" data-title="对付拖延症，最好的方法就是开始去做 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2018/03/12/docker-tutorial-1/" data-title="docker_tutorial_1 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -163,18 +189,18 @@
 <nav class="article-nav clearfix">
  
  <div class="prev" >
- <a href="/2016/03/04/howManyOne/" title="一个数学题目">
+ <a href="/2018/03/12/docker-tutorial-2/" title="docker_tutorial_2">
   <strong>上一篇：</strong><br/>
   <span>
-  一个数学题目</span>
+  docker_tutorial_2</span>
 </a>
 </div>
 
 
 <div class="next">
-<a href="/2016/01/29/hello-world/"  title="Hello World">
+<a href="/2018/03/08/docker-intro/"  title="docker_intro">
  <strong>下一篇：</strong><br/> 
- <span>Hello World
+ <span>docker_intro
 </span>
 </a>
 </div>
@@ -189,7 +215,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
  
- 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1__u57FA_u672C_u7ED3_u6784"><span class="toc-number">1.</span> <span class="toc-text">2.1 基本结构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u6982_u5FF5"><span class="toc-number">1.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u955C_u50CF_u4E0E_u5BB9_u5668"><span class="toc-number">1.2.</span> <span class="toc-text">镜像与容器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u955C_u50CF_u4E0E_u865A_u62DF_u673A"><span class="toc-number">1.3.</span> <span class="toc-text">镜像与虚拟机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u51C6_u5907_u4F60_u7684Docker_u73AF_u5883"><span class="toc-number">1.4.</span> <span class="toc-text">准备你的Docker环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6D4B_u8BD5Docker_08_u7248_u672C"><span class="toc-number">1.5.</span> <span class="toc-text">测试Docker版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6D4B_u8BD5Docker_u5B89_u88C5"><span class="toc-number">1.6.</span> <span class="toc-text">测试Docker安装</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u603B_u7ED3_u548C_u79D8_u7C4D_u5217_u8868"><span class="toc-number">1.7.</span> <span class="toc-text">总结和秘籍列表</span></a></li></ol></li></ol>
  
   </div>
 

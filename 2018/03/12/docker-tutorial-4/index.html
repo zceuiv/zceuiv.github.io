@@ -1,0 +1,553 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>docker_tutorial_4 | Invoker&#39;s 鱼食罐</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="Invoker">
+    
+
+    
+    <meta name="description" content="2.4 Swarm准备工作
+
+Docker 1.13版本或更高
+上一讲里讲过的Docker Compose
+Docker Machine，Docker for Mac和Docker for Windows自带的，其他环境需要下载。
+学习前3讲
+确保公开了教程2中的friendlyhello镜像。
+确定你的镜像能够作为一个容器工作。先运行docker run -p 80:80 username/re">
+<meta property="og:type" content="article">
+<meta property="og:title" content="docker_tutorial_4">
+<meta property="og:url" content="http://yoursite.com/2018/03/12/docker-tutorial-4/index.html">
+<meta property="og:site_name" content="Invoker's 鱼食罐">
+<meta property="og:description" content="2.4 Swarm准备工作
+
+Docker 1.13版本或更高
+上一讲里讲过的Docker Compose
+Docker Machine，Docker for Mac和Docker for Windows自带的，其他环境需要下载。
+学习前3讲
+确保公开了教程2中的friendlyhello镜像。
+确定你的镜像能够作为一个容器工作。先运行docker run -p 80:80 username/re">
+<meta property="og:image" content="http://yoursite.com/../../images/ingress-routing-mesh.png">
+<meta property="og:updated_time" content="2018-03-13T08:07:11.548Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="docker_tutorial_4">
+<meta name="twitter:description" content="2.4 Swarm准备工作
+
+Docker 1.13版本或更高
+上一讲里讲过的Docker Compose
+Docker Machine，Docker for Mac和Docker for Windows自带的，其他环境需要下载。
+学习前3讲
+确保公开了教程2中的friendlyhello镜像。
+确定你的镜像能够作为一个容器工作。先运行docker run -p 80:80 username/re">
+<meta name="twitter:image" content="http://yoursite.com/../../images/ingress-routing-mesh.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon_bottle.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="Invoker&#39;s 鱼食罐">Invoker&#39;s 鱼食罐</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/03/12/docker-tutorial-4/" title="docker_tutorial_4" itemprop="url">docker_tutorial_4</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
+		
+  <p class="article-time">
+    <time datetime="2018-03-12T08:14:11.000Z" itemprop="datePublished"> Published 2018-03-12</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4_Swarm"><span class="toc-number">1.</span> <span class="toc-text">2.4 Swarm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u51C6_u5907_u5DE5_u4F5C"><span class="toc-number">1.1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7B80_u4ECB"><span class="toc-number">1.2.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7406_u89E3Swarm_u96C6_u7FA4"><span class="toc-number">1.3.</span> <span class="toc-text">理解Swarm集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5B89_u88C5swarm"><span class="toc-number">1.4.</span> <span class="toc-text">安装swarm</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#u521B_u5EFA_u4E00_u4E2A_u96C6_u7FA4"><span class="toc-number">1.4.1.</span> <span class="toc-text">创建一个集群</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u90E8_u7F72_u5E94_u7528_u7A0B_u5E8F_u5230swarm_u96C6_u7FA4_u4E0A"><span class="toc-number">1.5.</span> <span class="toc-text">部署应用程序到swarm集群上</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u8FED_u4EE3_u548C_u6269_u5C55_u4F60_u7684_u7A0B_u5E8F"><span class="toc-number">1.6.</span> <span class="toc-text">迭代和扩展你的程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6E05_u9664_u548C_u91CD_u542F"><span class="toc-number">1.7.</span> <span class="toc-text">清除和重启</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<h2 id="2-4_Swarm"><a href="#2-4_Swarm" class="headerlink" title="2.4 Swarm"></a>2.4 Swarm</h2><h3 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h3><blockquote>
+<ul>
+<li>Docker 1.13版本或更高</li>
+<li>上一讲里讲过的Docker Compose</li>
+<li>Docker Machine，Docker for Mac和Docker for Windows自带的，其他环境需要下载。</li>
+<li>学习前3讲</li>
+<li>确保公开了教程2中的<code>friendlyhello</code>镜像。</li>
+<li>确定你的镜像能够作为一个容器工作。先运行<code>docker run -p 80:80 username/repo:tag</code>然后访问<code>http://localhost/</code>。</li>
+<li>复制一份教程3中你的<code>docker-compose.yml</code>文件</li>
+</ul>
+</blockquote>
+<h3 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h3><p>教程3中，你把教程2里写的程序转化为产品级的服务，并在进程中扩展了5倍</p>
+<p>现在教程4中，你把应用程序部署到集群上，并跑在多个机器上。加入名为Swarm的Docker化多机集群使得多容器、多机器应用成为可能。</p>
+<h3 id="u7406_u89E3Swarm_u96C6_u7FA4"><a href="#u7406_u89E3Swarm_u96C6_u7FA4" class="headerlink" title="理解Swarm集群"></a>理解Swarm集群</h3><p>swarm是一组机器运行Docker并加入了一个集群。加入了之后还是按照原来的方式运行Docker命令，但是现在它们在一个swarm管理机器上执行。机器可以是物理机也可以是虚拟机，加入swarm之后它们被成为node。</p>
+<p>swarm管理机用多种容器策略，“emptiest node”让容器占用最少机器资源，”global”使每个机器恰好有一个指定容器的实例。这些配置写在<code>docker-compose.yml</code>中？</p>
+<p>只有swarm管理机上可以执行你的命令，认证worker机器的加入认证。worker机器只提供容纳能力，不会告诉别的机器它能做什么不能做什么。</p>
+<p>切换到“swarm mode”，你执行的Docker命令就不再是单机的命令，而是对于所有swarm中管理的机器的命令。</p>
+<h3 id="u5B89_u88C5swarm"><a href="#u5B89_u88C5swarm" class="headerlink" title="安装swarm"></a>安装swarm</h3><p>运行<code>docker swarm init</code>来开启swarm mode，别的机器运行<code>docker swarm join</code>来加入这个swarm并成为一个worker。</p>
+<h4 id="u521B_u5EFA_u4E00_u4E2A_u96C6_u7FA4"><a href="#u521B_u5EFA_u4E00_u4E2A_u96C6_u7FA4" class="headerlink" title="创建一个集群"></a>创建一个集群</h4><p>在本机上使用docker-machine</p>
+<p>创建docker-machine<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ docker-machine create --driver virtualbox myvm1</div><div class="line">$ docker-machine create --driver virtualbox myvm2</div><div class="line">$ docker-machine ls</div><div class="line">NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS</div><div class="line">myvm1   -        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.100</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce   </div><div class="line">myvm2   -        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.101</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce</div></pre></td></tr></table></figure></p>
+<p>初始化swarm，增加node<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ docker-machine ssh myvm1</div><div class="line">/ docker swarm init --advertise-addr <span class="number">192.168</span><span class="meta">.90</span><span class="meta">.100</span>:<span class="number">2377</span></div></pre></td></tr></table></figure></p>
+<p>2376端口用于docker-machine，2377端口默认地用于swarm，不要占用它们修改它们。<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ docker-machine ssh myvm2</div><div class="line">/ docker swarm join --<span class="built_in">token</span> &lt;<span class="built_in">token</span>&gt; <span class="number">192.168</span><span class="number">.99</span><span class="number">.100</span>:<span class="number">2377</span></div></pre></td></tr></table></figure></p>
+<p>查看swarm节点<br><figure class="highlight mathematica"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ docker-machine ssh myvm1 <span class="string">"docker node ls"</span></div><div class="line">ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS</div><div class="line">brtu9urxwfd5j0zrmkubhpkbd     myvm2               Ready               <span class="keyword">Active</span></div><div class="line">rihwohkh3ph38fhillhhb84sk *   myvm1               Ready               <span class="keyword">Active</span>              Leader</div></pre></td></tr></table></figure></p>
+<h3 id="u90E8_u7F72_u5E94_u7528_u7A0B_u5E8F_u5230swarm_u96C6_u7FA4_u4E0A"><a href="#u90E8_u7F72_u5E94_u7528_u7A0B_u5E8F_u5230swarm_u96C6_u7FA4_u4E0A" class="headerlink" title="部署应用程序到swarm集群上"></a>部署应用程序到swarm集群上</h3><p>查看myvm1的环境<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ docker-machine env myvm1</div><div class="line"><span class="built_in">export</span> DOCKER_TLS_VERIFY=<span class="string">"1"</span></div><div class="line"><span class="built_in">export</span> DOCKER_HOST=<span class="string">"tcp://192.168.99.100:2376"</span></div><div class="line"><span class="built_in">export</span> DOCKER_CERT_PATH=<span class="string">"/Users/sam/.docker/machine/machines/myvm1"</span></div><div class="line"><span class="built_in">export</span> DOCKER_MACHINE_NAME=<span class="string">"myvm1"</span></div><div class="line"><span class="comment"># Run this command to configure your shell:</span></div><div class="line"><span class="comment"># eval $(docker-machine env myvm1)</span></div></pre></td></tr></table></figure></p>
+<p>切换到myvm1的环境<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ eval $(docker-machine env myvm1)</div><div class="line">$ docker-machine ls</div><div class="line">NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS</div><div class="line">myvm1   *        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.100</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce   </div><div class="line">myvm2   -        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.101</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce</div></pre></td></tr></table></figure></p>
+<p>在<code>myvm1</code>上执行<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose<span class="selector-class">.yml</span> getstartedlab</div></pre></td></tr></table></figure></p>
+<p>然后应用程序就部署到了swarm集群上。<br>再次查看stack<br><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ <span class="string">docker </span><span class="string">stack </span><span class="string">ps </span><span class="string">getstartedlab</span></div><div class="line"></div><div class="line"><span class="string">ID </span>           <span class="string">NAME </span>                 <span class="string">IMAGE </span>                  <span class="string">NODE </span>  <span class="string">DESIRED </span><span class="string">STATE</span></div><div class="line"><span class="string">jq2g3qp8nzwx </span> <span class="string">getstartedlab_web.</span>1   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm1 </span> <span class="string">Running</span></div><div class="line"><span class="string">88wgshobzoxl </span> <span class="string">getstartedlab_web.</span>2   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm2 </span> <span class="string">Running</span></div><div class="line"><span class="string">vbb1qbkb0o2z </span> <span class="string">getstartedlab_web.</span>3   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm2 </span> <span class="string">Running</span></div><div class="line"><span class="string">ghii74p9budx </span> <span class="string">getstartedlab_web.</span>4   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm1 </span> <span class="string">Running</span></div><div class="line"><span class="string">0prmarhavs87 </span> <span class="string">getstartedlab_web.</span>5   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm2 </span> <span class="string">Running</span></div></pre></td></tr></table></figure></p>
+<blockquote>
+<ul>
+<li><code>docker-machine env</code>每开一个新的shell都要重新执行一边</li>
+<li><code>docker-machine ssh</code>不共享文件</li>
+<li>Mac和Linux上使用<code>docker-machine scp</code>复制文件到虚拟机上</li>
+</ul>
+</blockquote>
+<p>访问集群<br>可以直接访问<code>http://192.168.99.101</code></p>
+<p>路由网<br><img src="/../../images/ingress-routing-mesh.png" alt="Alt text"></p>
+<blockquote>
+<ul>
+<li>Port 7946 TCP/UDP for container network discovery.</li>
+<li>Port 4789 UDP for the container ingress network.</li>
+</ul>
+</blockquote>
+<h3 id="u8FED_u4EE3_u548C_u6269_u5C55_u4F60_u7684_u7A0B_u5E8F"><a href="#u8FED_u4EE3_u548C_u6269_u5C55_u4F60_u7684_u7A0B_u5E8F" class="headerlink" title="迭代和扩展你的程序"></a>迭代和扩展你的程序</h3><p>修改<code>docker-compose.yml</code>文件来进行扩展。<br>修改代码，重新build，然后推送新的镜像。<br>再次执行<code>docker stack deploy</code>就将这些变更部署上了。<br>任何物理机、虚拟机都可以通过<code>docker swarm join</code>加入到swarm中，然后再运行<code>docker stack deploy</code>就可以利用它们。(这里我记得必须是global模式才行，而且Docker for Mac上的Swarm只能用于自己的Docker for Mac)</p>
+<h3 id="u6E05_u9664_u548C_u91CD_u542F"><a href="#u6E05_u9664_u548C_u91CD_u542F" class="headerlink" title="清除和重启"></a>清除和重启</h3><p>清除stack<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker <span class="keyword">stack</span> <span class="keyword">rm</span> getstartedlab</div></pre></td></tr></table></figure></p>
+<p>退出swarm<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker-machine ssh myvm2 <span class="string">"docker swarm leave"</span></div><div class="line"><span class="variable">$docker</span>-machine ssh myvm1 <span class="string">"docker swarm leave --force"</span></div></pre></td></tr></table></figure></p>
+<p>取消docker-machine的设置<br><figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">eval</span> $(docker-machine <span class="keyword">env</span> -u)</div></pre></td></tr></table></figure></p>
+<p>重启Docker Machines<br>关掉本地服务器后，Docker machines就停止了。通过<code>docker-machine ls</code>进行查看它们的状态，使用<code>docker-machine start &lt;machine-name&gt;</code>运行。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/blog/">blog</a>
+</div>
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/docker/">docker</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2018/03/12/docker-tutorial-4/" data-title="docker_tutorial_4 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2018/03/12/docker-tutorial-5/" title="docker_tutorial_5">
+  <strong>上一篇：</strong><br/>
+  <span>
+  docker_tutorial_5</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2018/03/12/docker-tutorial-3/"  title="docker_tutorial_3">
+ <strong>下一篇：</strong><br/> 
+ <span>docker_tutorial_3
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#2-4_Swarm"><span class="toc-number">1.</span> <span class="toc-text">2.4 Swarm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u51C6_u5907_u5DE5_u4F5C"><span class="toc-number">1.1.</span> <span class="toc-text">准备工作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7B80_u4ECB"><span class="toc-number">1.2.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u7406_u89E3Swarm_u96C6_u7FA4"><span class="toc-number">1.3.</span> <span class="toc-text">理解Swarm集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u5B89_u88C5swarm"><span class="toc-number">1.4.</span> <span class="toc-text">安装swarm</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#u521B_u5EFA_u4E00_u4E2A_u96C6_u7FA4"><span class="toc-number">1.4.1.</span> <span class="toc-text">创建一个集群</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u90E8_u7F72_u5E94_u7528_u7A0B_u5E8F_u5230swarm_u96C6_u7FA4_u4E0A"><span class="toc-number">1.5.</span> <span class="toc-text">部署应用程序到swarm集群上</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u8FED_u4EE3_u548C_u6269_u5C55_u4F60_u7684_u7A0B_u5E8F"><span class="toc-number">1.6.</span> <span class="toc-text">迭代和扩展你的程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u6E05_u9664_u548C_u91CD_u542F"><span class="toc-number">1.7.</span> <span class="toc-text">清除和重启</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+		  
+			<li><a href="/categories/blog/" title="blog">blog<sup>12</sup></a></li>
+		  
+		
+		  
+			<li><a href="/categories/patch/" title="patch">patch<sup>2</sup></a></li>
+		  
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/docker/" title="docker">docker<sup>7</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Go/" title="Go">Go<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/算法/" title="算法">算法<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Web/" title="Web">Web<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/分布式/" title="分布式">分布式<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/杂谈/" title="杂谈">杂谈<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/Database/" title="Database">Database<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=null&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> Welcome to my page. <br/>
+			This is the place I feed myself. Enjoy it!</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 
+		
+		<a href="/about" target="_blank" title="Invoker">Invoker</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
