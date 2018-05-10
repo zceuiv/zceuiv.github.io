@@ -4,23 +4,23 @@
 <head>
   <meta charset="UTF-8">
   
-    <title>容器间的互相通信 | Invoker&#39;s 鱼食罐</title>
+    <title>两道题目 | Invoker&#39;s 鱼食罐</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="Invoker">
     
 
     
-    <meta name="description" content="问题用go另写了一个服务。当把它放入docker要去部署的时候，产生了一个问题：它和之前的项目没法相互通信。">
+    <meta name="description" content="做了4道面试题，有2道涉及的一些思路值得目前的我记录一下。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="容器间的互相通信">
-<meta property="og:url" content="http://yoursite.com/2016/07/11/docker-communication/index.html">
+<meta property="og:title" content="两道题目">
+<meta property="og:url" content="http://yoursite.com/2018/05/10/interview-test/index.html">
 <meta property="og:site_name" content="Invoker's 鱼食罐">
-<meta property="og:description" content="问题用go另写了一个服务。当把它放入docker要去部署的时候，产生了一个问题：它和之前的项目没法相互通信。">
-<meta property="og:updated_time" content="2016-07-11T07:46:06.000Z">
+<meta property="og:description" content="做了4道面试题，有2道涉及的一些思路值得目前的我记录一下。">
+<meta property="og:updated_time" content="2018-05-10T02:47:38.580Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="容器间的互相通信">
-<meta name="twitter:description" content="问题用go另写了一个服务。当把它放入docker要去部署的时候，产生了一个问题：它和之前的项目没法相互通信。">
+<meta name="twitter:title" content="两道题目">
+<meta name="twitter:description" content="做了4道面试题，有2道涉及的一些思路值得目前的我记录一下。">
 
     
     <link rel="alternative" href="/atom.xml" title="Invoker&#39;s 鱼食罐" type="application/atom+xml">
@@ -76,14 +76,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2016/07/11/docker-communication/" title="容器间的互相通信" itemprop="url">容器间的互相通信</a>
+      <a href="/2018/05/10/interview-test/" title="两道题目" itemprop="url">两道题目</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="Invoker" target="_blank" itemprop="author">Invoker</a>
 		
   <p class="article-time">
-    <time datetime="2016-07-11T05:23:04.000Z" itemprop="datePublished"> Published 2016-07-11</time>
+    <time datetime="2018-05-10T01:28:11.000Z" itemprop="datePublished"> Published 2018-05-10</time>
     
   </p>
 </header>
@@ -92,17 +92,20 @@
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
 		
-			<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u95EE_u9898"><span class="toc-number">1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u89E3_u51B3_u529E_u6CD5"><span class="toc-number">2.</span> <span class="toc-text">解决办法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u4F7F_u7528host_u7F51_u7EDC"><span class="toc-number">2.1.</span> <span class="toc-text">使用host网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u4F7F_u7528_u5BB9_u56681_u7684_u7F51_u7EDC"><span class="toc-number">2.2.</span> <span class="toc-text">使用容器1的网络</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u5176_u4ED6"><span class="toc-number">3.</span> <span class="toc-text">其他</span></a></li></ol>
+			<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#3-__u62BD_u5956"><span class="toc-number">1.</span> <span class="toc-text">3. 抽奖</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-__u6392_u5E8F"><span class="toc-number">2.</span> <span class="toc-text">4. 排序</span></a></li></ol>
 		
 		</div>
 		
-		<h2 id="u95EE_u9898"><a href="#u95EE_u9898" class="headerlink" title="问题"></a>问题</h2><p>用go另写了一个服务。当把它放入docker要去部署的时候，产生了一个问题：它和之前的项目没法相互通信。</p>
+		<p>做了4道面试题，有2道涉及的一些思路值得目前的我记录一下。</p>
 <a id="more"></a>
-<p>如有一个test1服务监听5555端口，并且向6666端口循环发送数据；另一个test2服务监听6666端口，并且向5555端口循环发送数据。两个服务分别打包成镜像，一个叫golang/test1，一个叫golang/test2。</p>
-<h2 id="u89E3_u51B3_u529E_u6CD5"><a href="#u89E3_u51B3_u529E_u6CD5" class="headerlink" title="解决办法"></a>解决办法</h2><p>两个解决办法。都用到了docker中<code>--net</code>的设置。</p>
-<h3 id="u4F7F_u7528host_u7F51_u7EDC"><a href="#u4F7F_u7528host_u7F51_u7EDC" class="headerlink" title="使用host网络"></a>使用host网络</h3><p>使用如下命令：<br><code>docker run -d --net=host -p 5555:5555 --name daemon_test1 golang/test1 /go/test1</code><br><code>docker run -d --net=host -p 6666:6666 --name daemon_test2 golang/test2 /go/test2</code></p>
-<h3 id="u4F7F_u7528_u5BB9_u56681_u7684_u7F51_u7EDC"><a href="#u4F7F_u7528_u5BB9_u56681_u7684_u7F51_u7EDC" class="headerlink" title="使用容器1的网络"></a>使用容器1的网络</h3><p>使用如下命令：<br><code>docker run -d -p 5555:5555 --name daemon_test1 golang/test1 /go/test1</code><br><code>docker run -d --net container:daemon_test3 --name daemon_test2 golang/test2 /go/test2</code></p>
-<h2 id="u5176_u4ED6"><a href="#u5176_u4ED6" class="headerlink" title="其他"></a>其他</h2><p>其他可能还有很多方法，比如设置<code>--net</code>和<code>--net-alias</code>，同方法一，把他们放在同一个网络中；比如使用其他外部工具等等。没有具体尝试因此不再赘述，我最后选择的方法2。</p>
+<h1 id="3-__u62BD_u5956"><a href="#3-__u62BD_u5956" class="headerlink" title="3. 抽奖"></a>3. 抽奖</h1><p>有B、A、S、SS四种奖，B有无限份，A有1000份，S有20份，SS有5份。<br>B的中奖概率为80%，剩下的20%概率中，按照”份数除以总数”作为中奖概率。<br>考虑并发以及多线程，非循环串行化调用抽奖。</p>
+<p>我的做法<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">random</span><span class="params">(total <span class="keyword">int</span>)</span> <span class="params">(result <span class="keyword">int</span>)</span></span> &#123;</div><div class="line">    <span class="comment">// 返回小于total的非负int类型随机数</span></div><div class="line">    <span class="keyword">return</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">isAward</span><span class="params">(sub, total <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123;</div><div class="line">    <span class="keyword">return</span> random(total <span class="keyword">int</span>) &lt; sub</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> (</div><div class="line">    B  Award</div><div class="line">    A  Award</div><div class="line">    S  Award</div><div class="line">    SS Award</div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">var</span> (</div><div class="line">    ca = <span class="number">1000</span></div><div class="line">    cs = <span class="number">20</span></div><div class="line">    css = <span class="number">5</span></div><div class="line">)</div><div class="line"></div><div class="line"><span class="keyword">var</span> mutex sync.Mutex</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">getAward</span><span class="params">()</span> <span class="title">Award</span></span> &#123;</div><div class="line">    <span class="keyword">if</span> isAward(<span class="number">4</span>, <span class="number">5</span>) &#123;</div><div class="line">        <span class="keyword">return</span> B</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    mutex.Lock()</div><div class="line">    <span class="keyword">defer</span> mutex.Unlock()</div><div class="line">    ran := random(ca + cs + css)</div><div class="line">    <span class="keyword">if</span> ran &lt; ca &#123;</div><div class="line">        ca--</div><div class="line">        <span class="keyword">return</span> A</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> ran &lt; ca + cs &#123;</div><div class="line">        cs--</div><div class="line">        <span class="keyword">return</span> S</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">if</span> ran &lt; ca + cs + css &#123;</div><div class="line">        css--</div><div class="line">        <span class="keyword">return</span> SS</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> B</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>他们的做法</p>
+<p>事先排好中奖的次序（不随机）<br>按照抽奖的顺序分配奖励</p>
+<h1 id="4-__u6392_u5E8F"><a href="#4-__u6392_u5E8F" class="headerlink" title="4. 排序"></a>4. 排序</h1><p>有一千万份订单，id为1～10000000，每个订单金额在1～128之间。给定某个id，找到它的订单在所有订单中按照金额排序的顺序，如果金额相同则按照时间顺序。</p>
+<p>我的做法</p>
+<p>(1) 订单按照尾数分成10个表<br>(2) 查到该id的订单和金额<br>(3) 查询每个表大于这个金额的数量<br>(4) 查询每个表等于这个金额并且时间小于这个订单的数量</p>
+<p>他们的做法<br>(1) 建立一个金额——数量表，分为1～128的金额<br>(2) 存订单时更新金额——数量表的值<br>(3) 查询某订单的金额然后直接去金额——数量表里查到对应的值</p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -125,7 +128,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://yoursite.com/2016/07/11/docker-communication/" data-title="容器间的互相通信 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
+	  <div data-url="http://yoursite.com/2018/05/10/interview-test/" data-title="两道题目 | Invoker&#39;s 鱼食罐" data-tsina="null" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -138,19 +141,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2018/03/08/docker-intro/" title="docker_intro">
-  <strong>上一篇：</strong><br/>
-  <span>
-  docker_intro</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2016/05/06/from-Byzantinefailure-to-etcd/"  title="从拜占庭将军问题到一致性算法到etcd">
+<a href="/2018/03/12/docker-tutorial-5/"  title="docker_tutorial_5">
  <strong>下一篇：</strong><br/> 
- <span>从拜占庭将军问题到一致性算法到etcd
+ <span>docker_tutorial_5
 </span>
 </a>
 </div>
@@ -165,7 +160,7 @@
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
  
- <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#u95EE_u9898"><span class="toc-number">1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u89E3_u51B3_u529E_u6CD5"><span class="toc-number">2.</span> <span class="toc-text">解决办法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#u4F7F_u7528host_u7F51_u7EDC"><span class="toc-number">2.1.</span> <span class="toc-text">使用host网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#u4F7F_u7528_u5BB9_u56681_u7684_u7F51_u7EDC"><span class="toc-number">2.2.</span> <span class="toc-text">使用容器1的网络</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#u5176_u4ED6"><span class="toc-number">3.</span> <span class="toc-text">其他</span></a></li></ol>
+ <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#3-__u62BD_u5956"><span class="toc-number">1.</span> <span class="toc-text">3. 抽奖</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-__u6392_u5E8F"><span class="toc-number">2.</span> <span class="toc-text">4. 排序</span></a></li></ol>
  
   </div>
 
