@@ -100,6 +100,11 @@
 <div class="article-catetags">
 
 
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/算法/">算法</a>
+  </div>
+
 </div>
 
 
@@ -158,7 +163,7 @@
 
   <div class="article-tags">
   
-  <span></span> <a href="/tags/docker/">docker</a>
+  <span></span> <a href="/tags/算法/">算法</a>
   </div>
 
 </div>
@@ -199,71 +204,12 @@
 </header>
     <div class="article-content">
         
-        <a id="more"></a>
-<h2 id="2-5_Stack"><a href="#2-5_Stack" class="headerlink" title="2.5 Stack"></a>2.5 Stack</h2><h3 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h3><blockquote>
-<ul>
-<li>Docker1.13或以上版本。</li>
-<li><a href="https://docs.docker.com/compose/overview/" target="_blank" rel="external">Docker Compose</a>。<a href="https://docs.docker.com/machine/overview/" target="_blank" rel="external">Docker Machine</a>。</li>
-<li>学习了教程1和教程2。</li>
-<li>确保公开了教程2中的<code>friendlyhello</code>镜像。</li>
-<li>确定你的镜像能够作为一个容器工作。先运行<code>docker run -p 80:80 username/repo:tag</code>然后访问<code>http://localhost/</code>。</li>
-<li>教程3里的<code>docker-compose.yml</code>文件的拷贝。</li>
-<li>教程4中准备的<code>docker-machine</code>可用。<code>docker-machine ls</code>，<code>docker-machine start myvm1</code>。</li>
-<li>教程4中的swarm可用。<code>docker-machine ssh myvm1 &quot;docker node ls&quot;</code></li>
-</ul>
-</blockquote>
-<h3 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h3><p>教程4中学习了启动swarm作为Docker集群，并且部署了一个应用程序到多机器上同步运行。<br>教程5介绍stack。stack是一组相互关联的服务，它们共享依赖项，可以共同编排和扩展。一个单独的stack是能够定义和协调一整个应用的功能的(当然特别复杂的应用们会需要使用多个stack)。<br>这里你会部署多个服务到多个机器上。</p>
-<h3 id="u6DFB_u52A0_u4E00_u4E2A_u65B0_u7684_u670D_u52A1_u5E76_u91CD_u65B0_u90E8_u7F72"><a href="#u6DFB_u52A0_u4E00_u4E2A_u65B0_u7684_u670D_u52A1_u5E76_u91CD_u65B0_u90E8_u7F72" class="headerlink" title="添加一个新的服务并重新部署"></a>添加一个新的服务并重新部署</h3><ol>
-<li>打开<code>docker-compose.yml</code>文件，做如下修改。<figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="attr">version:</span> <span class="string">"3"</span></div><div class="line"><span class="attr">services:</span></div><div class="line"><span class="attr">  web:</span></div><div class="line">    <span class="comment"># replace username/repo:tag with your name and image details</span></div><div class="line"><span class="attr">    image:</span> username/repo:tag</div><div class="line"><span class="attr">    deploy:</span></div><div class="line"><span class="attr">      replicas:</span> <span class="number">5</span></div><div class="line"><span class="attr">      restart_policy:</span></div><div class="line"><span class="attr">        condition:</span> on-failure</div><div class="line"><span class="attr">      resources:</span></div><div class="line"><span class="attr">        limits:</span></div><div class="line"><span class="attr">          cpus:</span> <span class="string">"0.1"</span></div><div class="line"><span class="attr">          memory:</span> <span class="number">50</span>M</div><div class="line"><span class="attr">    ports:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"80:80"</span></div><div class="line"><span class="attr">    networks:</span></div><div class="line"><span class="bullet">      -</span> webnet</div><div class="line"><span class="attr">  visualizer:</span></div><div class="line"><span class="attr">    image:</span> dockersamples/visualizer:stable</div><div class="line"><span class="attr">    ports:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"8080:8080"</span></div><div class="line"><span class="attr">    volumes:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"/var/run/docker.sock:/var/run/docker.sock"</span></div><div class="line"><span class="attr">    deploy:</span></div><div class="line"><span class="attr">      placement:</span></div><div class="line"><span class="attr">        constraints:</span> [node.role == manager]</div><div class="line"><span class="attr">    networks:</span></div><div class="line"><span class="bullet">      -</span> webnet</div><div class="line"><span class="attr">networks:</span></div><div class="line"><span class="attr">  webnet:</span></div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>这里新增了一个和<code>web</code>同等地位的服务，名为<code>visualizer</code>。两个新的东西：<code>volumes</code>关键字，试的visualizer访问主机的socket文件；<code>placement</code>关键字，确保这个服务只运行在swarm管理机上。这是因为visualizer这个容器是用来图形化显示Docker服务如何放在swarm。</p>
-<ol>
-<li>确保你的shell配置为和myvm1对话</li>
-</ol>
-<ul>
-<li>运行<code>docker-machine ls</code>列出虚拟机列表</li>
-<li>如果需要，重新运行<code>docker-machine env myvm1</code>，然后<code>eval $(docker-machine env myvm1)</code>。</li>
-</ul>
-<ol>
-<li><p>重新在管理机上运行<code>docker stack deploy</code>命令，这样需要更新的服务就会更新。</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose<span class="selector-class">.yml</span> getstartedlab</div></pre></td></tr></table></figure>
-</li>
-<li><p>查看visualizer<br>compose文件中看到<code>visualizer</code>运行在8080端口，找到docker-machine的任意一个ip的8080端口访问visualizer。</p>
-</li>
-</ol>
-<h3 id="u6570_u636E_u6301_u4E45_u5316"><a href="#u6570_u636E_u6301_u4E45_u5316" class="headerlink" title="数据持久化"></a>数据持久化</h3><p>同样的流程加入一个Redis数据库用来存储数据。</p>
-<ol>
-<li>存储新的<code>docker-compose.yml</code>文件<figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="attr">version:</span> <span class="string">"3"</span></div><div class="line"><span class="attr">services:</span></div><div class="line"><span class="attr">  web:</span></div><div class="line">    <span class="comment"># replace username/repo:tag with your name and image details</span></div><div class="line"><span class="attr">    image:</span> username/repo:tag</div><div class="line"><span class="attr">    deploy:</span></div><div class="line"><span class="attr">      replicas:</span> <span class="number">5</span></div><div class="line"><span class="attr">      restart_policy:</span></div><div class="line"><span class="attr">        condition:</span> on-failure</div><div class="line"><span class="attr">      resources:</span></div><div class="line"><span class="attr">        limits:</span></div><div class="line"><span class="attr">          cpus:</span> <span class="string">"0.1"</span></div><div class="line"><span class="attr">          memory:</span> <span class="number">50</span>M</div><div class="line"><span class="attr">    ports:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"80:80"</span></div><div class="line"><span class="attr">    networks:</span></div><div class="line"><span class="bullet">      -</span> webnet</div><div class="line"><span class="attr">  visualizer:</span></div><div class="line"><span class="attr">    image:</span> dockersamples/visualizer:stable</div><div class="line"><span class="attr">    ports:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"8080:8080"</span></div><div class="line"><span class="attr">    volumes:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"/var/run/docker.sock:/var/run/docker.sock"</span></div><div class="line"><span class="attr">    deploy:</span></div><div class="line"><span class="attr">      placement:</span></div><div class="line"><span class="attr">        constraints:</span> [node.role == manager]</div><div class="line"><span class="attr">    networks:</span></div><div class="line"><span class="bullet">      -</span> webnet</div><div class="line"><span class="attr">  redis:</span></div><div class="line"><span class="attr">    image:</span> redis</div><div class="line"><span class="attr">    ports:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"6379:6379"</span></div><div class="line"><span class="attr">    volumes:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"/home/docker/data:/data"</span></div><div class="line"><span class="attr">    deploy:</span></div><div class="line"><span class="attr">      placement:</span></div><div class="line"><span class="attr">        constraints:</span> [node.role == manager]</div><div class="line"><span class="attr">    command:</span> redis-server --appendonly <span class="literal">yes</span></div><div class="line"><span class="attr">    networks:</span></div><div class="line"><span class="bullet">      -</span> webnet</div><div class="line"><span class="attr">networks:</span></div><div class="line"><span class="attr">  webnet:</span></div></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>几个呃呃呃重要的有关<code>redis</code>的地方说一下，有点特殊。</p>
-<blockquote>
-<ul>
-<li><code>redis</code>总是跑在manager上，所以它们总是使用相同的文件系统。</li>
-<li><code>redis</code>访问主机文件系统上任意一个都可以的目录映射到容器中的<code>/data</code>目录，这里用来存储数据。</li>
-</ul>
-</blockquote>
-<p>这两点使得Redis数据存储在物理主机文件系统真实源上。不这样做，当容器重新部署时会抹掉存储的数据。</p>
-<ol>
-<li><p>在管理机上创建<code>./data</code>目录</p>
-<figure class="highlight autoit"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$docker-machine ssh myvm1 <span class="string">"mkdir ./data"</span></div></pre></td></tr></table></figure>
-</li>
-<li><p>确保shell配置为和myvm1对话</p>
-<figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ docker-machine <span class="keyword">ls</span></div><div class="line">$ docker-machine <span class="keyword">env</span> myvm1</div><div class="line">$ <span class="keyword">eval</span> $(docker-machine <span class="keyword">env</span> myvm1)</div></pre></td></tr></table></figure>
-</li>
-<li><p>再次运行<code>docker stack deploy</code></p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose<span class="selector-class">.yml</span> getstartedlab</div></pre></td></tr></table></figure>
-</li>
-<li><p>运行<code>docker service ls</code>确认3个服务都如期运行</p>
-</li>
-<li><p>访问<code>http://192.168.99.101</code>查看访问计数，这个计数存储在Redis中。<br>同样的，检查8080端口中的visualizer，看到<code>redis</code>服务运行</p>
-</li>
-</ol>
-
+        <h2 id="2-5_Stack"><a href="#2-5_Stack" class="headerlink" title="2.5 Stack"></a>2.5 Stack</h2>
         
         
         <p class="article-more-link">
+          
+            <a href="/2018/03/12/docker-tutorial-5/#more">Read More</a>
           
        </p>
     </div>
@@ -319,58 +265,12 @@
 </header>
     <div class="article-content">
         
-        <a id="more"></a>
-<h2 id="2-4_Swarm"><a href="#2-4_Swarm" class="headerlink" title="2.4 Swarm"></a>2.4 Swarm</h2><h3 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h3><blockquote>
-<ul>
-<li>Docker 1.13版本或更高</li>
-<li>上一讲里讲过的Docker Compose</li>
-<li>Docker Machine，Docker for Mac和Docker for Windows自带的，其他环境需要下载。</li>
-<li>学习前3讲</li>
-<li>确保公开了教程2中的<code>friendlyhello</code>镜像。</li>
-<li>确定你的镜像能够作为一个容器工作。先运行<code>docker run -p 80:80 username/repo:tag</code>然后访问<code>http://localhost/</code>。</li>
-<li>复制一份教程3中你的<code>docker-compose.yml</code>文件</li>
-</ul>
-</blockquote>
-<h3 id="u7B80_u4ECB"><a href="#u7B80_u4ECB" class="headerlink" title="简介"></a>简介</h3><p>教程3中，你把教程2里写的程序转化为产品级的服务，并在进程中扩展了5倍</p>
-<p>现在教程4中，你把应用程序部署到集群上，并跑在多个机器上。加入名为Swarm的Docker化多机集群使得多容器、多机器应用成为可能。</p>
-<h3 id="u7406_u89E3Swarm_u96C6_u7FA4"><a href="#u7406_u89E3Swarm_u96C6_u7FA4" class="headerlink" title="理解Swarm集群"></a>理解Swarm集群</h3><p>swarm是一组机器运行Docker并加入了一个集群。加入了之后还是按照原来的方式运行Docker命令，但是现在它们在一个swarm管理机器上执行。机器可以是物理机也可以是虚拟机，加入swarm之后它们被成为node。</p>
-<p>swarm管理机用多种容器策略，“emptiest node”让容器占用最少机器资源，”global”使每个机器恰好有一个指定容器的实例。这些配置写在<code>docker-compose.yml</code>中？</p>
-<p>只有swarm管理机上可以执行你的命令，认证worker机器的加入认证。worker机器只提供容纳能力，不会告诉别的机器它能做什么不能做什么。</p>
-<p>切换到“swarm mode”，你执行的Docker命令就不再是单机的命令，而是对于所有swarm中管理的机器的命令。</p>
-<h3 id="u5B89_u88C5swarm"><a href="#u5B89_u88C5swarm" class="headerlink" title="安装swarm"></a>安装swarm</h3><p>运行<code>docker swarm init</code>来开启swarm mode，别的机器运行<code>docker swarm join</code>来加入这个swarm并成为一个worker。</p>
-<h4 id="u521B_u5EFA_u4E00_u4E2A_u96C6_u7FA4"><a href="#u521B_u5EFA_u4E00_u4E2A_u96C6_u7FA4" class="headerlink" title="创建一个集群"></a>创建一个集群</h4><p>在本机上使用docker-machine</p>
-<p>创建docker-machine<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$ docker-machine create --driver virtualbox myvm1</div><div class="line">$ docker-machine create --driver virtualbox myvm2</div><div class="line">$ docker-machine ls</div><div class="line">NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS</div><div class="line">myvm1   -        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.100</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce   </div><div class="line">myvm2   -        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.101</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce</div></pre></td></tr></table></figure></p>
-<p>初始化swarm，增加node<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ docker-machine ssh myvm1</div><div class="line">/ docker swarm init --advertise-addr <span class="number">192.168</span><span class="meta">.90</span><span class="meta">.100</span>:<span class="number">2377</span></div></pre></td></tr></table></figure></p>
-<p>2376端口用于docker-machine，2377端口默认地用于swarm，不要占用它们修改它们。<br><figure class="highlight gauss"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ docker-machine ssh myvm2</div><div class="line">/ docker swarm join --<span class="built_in">token</span> &lt;<span class="built_in">token</span>&gt; <span class="number">192.168</span><span class="number">.99</span><span class="number">.100</span>:<span class="number">2377</span></div></pre></td></tr></table></figure></p>
-<p>查看swarm节点<br><figure class="highlight mathematica"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ docker-machine ssh myvm1 <span class="string">"docker node ls"</span></div><div class="line">ID                            HOSTNAME            STATUS              AVAILABILITY        MANAGER STATUS</div><div class="line">brtu9urxwfd5j0zrmkubhpkbd     myvm2               Ready               <span class="keyword">Active</span></div><div class="line">rihwohkh3ph38fhillhhb84sk *   myvm1               Ready               <span class="keyword">Active</span>              Leader</div></pre></td></tr></table></figure></p>
-<h3 id="u90E8_u7F72_u5E94_u7528_u7A0B_u5E8F_u5230swarm_u96C6_u7FA4_u4E0A"><a href="#u90E8_u7F72_u5E94_u7528_u7A0B_u5E8F_u5230swarm_u96C6_u7FA4_u4E0A" class="headerlink" title="部署应用程序到swarm集群上"></a>部署应用程序到swarm集群上</h3><p>查看myvm1的环境<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ docker-machine env myvm1</div><div class="line"><span class="built_in">export</span> DOCKER_TLS_VERIFY=<span class="string">"1"</span></div><div class="line"><span class="built_in">export</span> DOCKER_HOST=<span class="string">"tcp://192.168.99.100:2376"</span></div><div class="line"><span class="built_in">export</span> DOCKER_CERT_PATH=<span class="string">"/Users/sam/.docker/machine/machines/myvm1"</span></div><div class="line"><span class="built_in">export</span> DOCKER_MACHINE_NAME=<span class="string">"myvm1"</span></div><div class="line"><span class="comment"># Run this command to configure your shell:</span></div><div class="line"><span class="comment"># eval $(docker-machine env myvm1)</span></div></pre></td></tr></table></figure></p>
-<p>切换到myvm1的环境<br><figure class="highlight x86asm"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ eval $(docker-machine env myvm1)</div><div class="line">$ docker-machine ls</div><div class="line">NAME    ACTIVE   DRIVER       STATE     URL                         SWARM   DOCKER        ERRORS</div><div class="line">myvm1   *        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.100</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce   </div><div class="line">myvm2   -        virtualbox   Running   tcp://<span class="number">192.168</span><span class="meta">.99</span><span class="meta">.101</span>:<span class="number">2376</span>           v17<span class="meta">.06</span><span class="meta">.2</span>-ce</div></pre></td></tr></table></figure></p>
-<p>在<code>myvm1</code>上执行<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose<span class="selector-class">.yml</span> getstartedlab</div></pre></td></tr></table></figure></p>
-<p>然后应用程序就部署到了swarm集群上。<br>再次查看stack<br><figure class="highlight dsconfig"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ <span class="string">docker </span><span class="string">stack </span><span class="string">ps </span><span class="string">getstartedlab</span></div><div class="line"></div><div class="line"><span class="string">ID </span>           <span class="string">NAME </span>                 <span class="string">IMAGE </span>                  <span class="string">NODE </span>  <span class="string">DESIRED </span><span class="string">STATE</span></div><div class="line"><span class="string">jq2g3qp8nzwx </span> <span class="string">getstartedlab_web.</span>1   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm1 </span> <span class="string">Running</span></div><div class="line"><span class="string">88wgshobzoxl </span> <span class="string">getstartedlab_web.</span>2   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm2 </span> <span class="string">Running</span></div><div class="line"><span class="string">vbb1qbkb0o2z </span> <span class="string">getstartedlab_web.</span>3   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm2 </span> <span class="string">Running</span></div><div class="line"><span class="string">ghii74p9budx </span> <span class="string">getstartedlab_web.</span>4   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm1 </span> <span class="string">Running</span></div><div class="line"><span class="string">0prmarhavs87 </span> <span class="string">getstartedlab_web.</span>5   <span class="string">john/</span><span class="built_in">get-started:part2</span>  <span class="string">myvm2 </span> <span class="string">Running</span></div></pre></td></tr></table></figure></p>
-<blockquote>
-<ul>
-<li><code>docker-machine env</code>每开一个新的shell都要重新执行一边</li>
-<li><code>docker-machine ssh</code>不共享文件</li>
-<li>Mac和Linux上使用<code>docker-machine scp</code>复制文件到虚拟机上</li>
-</ul>
-</blockquote>
-<p>访问集群<br>可以直接访问<code>http://192.168.99.101</code></p>
-<p>路由网<br><img src="/../../images/ingress-routing-mesh.png" alt="Alt text"></p>
-<blockquote>
-<ul>
-<li>Port 7946 TCP/UDP for container network discovery.</li>
-<li>Port 4789 UDP for the container ingress network.</li>
-</ul>
-</blockquote>
-<h3 id="u8FED_u4EE3_u548C_u6269_u5C55_u4F60_u7684_u7A0B_u5E8F"><a href="#u8FED_u4EE3_u548C_u6269_u5C55_u4F60_u7684_u7A0B_u5E8F" class="headerlink" title="迭代和扩展你的程序"></a>迭代和扩展你的程序</h3><p>修改<code>docker-compose.yml</code>文件来进行扩展。<br>修改代码，重新build，然后推送新的镜像。<br>再次执行<code>docker stack deploy</code>就将这些变更部署上了。<br>任何物理机、虚拟机都可以通过<code>docker swarm join</code>加入到swarm中，然后再运行<code>docker stack deploy</code>就可以利用它们。(这里我记得必须是global模式才行，而且Docker for Mac上的Swarm只能用于自己的Docker for Mac)</p>
-<h3 id="u6E05_u9664_u548C_u91CD_u542F"><a href="#u6E05_u9664_u548C_u91CD_u542F" class="headerlink" title="清除和重启"></a>清除和重启</h3><p>清除stack<br><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker <span class="keyword">stack</span> <span class="keyword">rm</span> getstartedlab</div></pre></td></tr></table></figure></p>
-<p>退出swarm<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker-machine ssh myvm2 <span class="string">"docker swarm leave"</span></div><div class="line"><span class="variable">$docker</span>-machine ssh myvm1 <span class="string">"docker swarm leave --force"</span></div></pre></td></tr></table></figure></p>
-<p>取消docker-machine的设置<br><figure class="highlight mel"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ <span class="keyword">eval</span> $(docker-machine <span class="keyword">env</span> -u)</div></pre></td></tr></table></figure></p>
-<p>重启Docker Machines<br>关掉本地服务器后，Docker machines就停止了。通过<code>docker-machine ls</code>进行查看它们的状态，使用<code>docker-machine start &lt;machine-name&gt;</code>运行。</p>
-
+        <h2 id="2-4_Swarm"><a href="#2-4_Swarm" class="headerlink" title="2.4 Swarm"></a>2.4 Swarm</h2>
         
         
         <p class="article-more-link">
+          
+            <a href="/2018/03/12/docker-tutorial-4/#more">Read More</a>
           
        </p>
     </div>
@@ -426,38 +326,12 @@
 </header>
     <div class="article-content">
         
-        <a id="more"></a>
-<h2 id="2-3__u670D_u52A1"><a href="#2-3__u670D_u52A1" class="headerlink" title="2.3 服务"></a>2.3 服务</h2><h3 id="u51C6_u5907_u5DE5_u4F5C"><a href="#u51C6_u5907_u5DE5_u4F5C" class="headerlink" title="准备工作"></a>准备工作</h3><blockquote>
-<ul>
-<li>Docker1.13或以上版本。</li>
-<li><a href="https://docs.docker.com/compose/overview/" target="_blank" rel="external">Docker Compose</a>。Docker for Mac和Docker for Windows已经预安装。</li>
-<li>学习了教程1和教程2。</li>
-<li>确保公开了教程2中的<code>friendlyhello</code>镜像。</li>
-<li>确定你的镜像能够作为一个容器工作。先运行<code>docker run -p 80:80 username/repo:tag</code>然后访问<code>http://localhost/</code>。</li>
-</ul>
-</blockquote>
-<h3 id="u4ECB_u7ECD"><a href="#u4ECB_u7ECD" class="headerlink" title="介绍"></a>介绍</h3><h3 id="u5173_u4E8E_u670D_u52A1"><a href="#u5173_u4E8E_u670D_u52A1" class="headerlink" title="关于服务"></a>关于服务</h3><p>分布式应用程序中，程序中不同的部分被称为服务。例如，如果做一个视频分享网站，可能会划分存储为一个服务，后台上传视频并转码为一个服务，前端为一个服务，等等。</p>
-<p>Services其实就是“containers in production.”一个服务只运行一个镜像，但是它规范容器运行的方式：应该用哪个端口，运行多少份容器的复制，等等。扩展一个服务改变容器实例运行的数量、分配计算资源给那个服务。</p>
-<h3 id="u4F60_u7684_u7B2C_u4E00_u4E2Adocker-compose-yml_u6587_u4EF6"><a href="#u4F60_u7684_u7B2C_u4E00_u4E2Adocker-compose-yml_u6587_u4EF6" class="headerlink" title="你的第一个docker-compose.yml文件"></a>你的第一个<code>docker-compose.yml</code>文件</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="attr">version:</span> <span class="string">"3"</span></div><div class="line"><span class="attr">services:</span></div><div class="line"><span class="attr">  web:</span></div><div class="line">    <span class="comment"># replace username/repo:tag with your name and image details</span></div><div class="line"><span class="attr">    image:</span> username/repo:tag</div><div class="line"><span class="attr">    deploy:</span></div><div class="line"><span class="attr">      replicas:</span> <span class="number">5</span></div><div class="line"><span class="attr">      resources:</span></div><div class="line"><span class="attr">        limits:</span></div><div class="line"><span class="attr">          cpus:</span> <span class="string">"0.1"</span></div><div class="line"><span class="attr">          memory:</span> <span class="number">50</span>M</div><div class="line"><span class="attr">      restart_policy:</span></div><div class="line"><span class="attr">        condition:</span> on-failure</div><div class="line"><span class="attr">    ports:</span></div><div class="line"><span class="bullet">      -</span> <span class="string">"80:80"</span></div><div class="line"><span class="attr">    networks:</span></div><div class="line"><span class="bullet">      -</span> webnet</div><div class="line"><span class="attr">networks:</span></div><div class="line"><span class="attr">  webnet:</span></div></pre></td></tr></table></figure>
-<p>这个<code>docker-compose.yml</code>文件告诉Docker做如下事情：</p>
-<blockquote>
-<ul>
-<li>拉取镜像。</li>
-<li>运行那个镜像的5个实例作为一个服务，命名为<code>web</code>，限制每一个实例最多10%的CPU(按所有核心算)和50MB内存。</li>
-<li>当某个容器宕掉时立刻重启它。</li>
-<li>映射主机80端口到<code>web</code>服务的80端口。</li>
-<li>使所有<code>web</code>服务的容器共享80端口，通过一个负载均衡的网络，命名为<code>webnet</code>。</li>
-<li>使用默认设置定义<code>webnet</code>网络(负载均衡的覆盖网络)。</li>
-</ul>
-</blockquote>
-<h3 id="u8FD0_u884C_u4F60_u7684_u65B0_u8D1F_u8F7D_u5747_u8861_u7A0B_u5E8F"><a href="#u8FD0_u884C_u4F60_u7684_u65B0_u8D1F_u8F7D_u5747_u8861_u7A0B_u5E8F" class="headerlink" title="运行你的新负载均衡程序"></a>运行你的新负载均衡程序</h3><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker swarm init</div><div class="line"><span class="variable">$ </span>docker stack deploy -c docker-compose.yml getstartedlab</div><div class="line"><span class="variable">$ </span>docker service ls</div><div class="line"><span class="variable">$ </span>docker service ps getstartedlab_web</div></pre></td></tr></table></figure>
-<h3 id="u6269_u5C55_u5E94_u7528_u7A0B_u5E8F"><a href="#u6269_u5C55_u5E94_u7528_u7A0B_u5E8F" class="headerlink" title="扩展应用程序"></a>扩展应用程序</h3><p>你可以修改<code>docker-compose.yml</code>文件中的<code>replicas</code>的值，保存然后重新运行<code>docker stack deploy</code>命令：<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker stack deploy -c docker-compose<span class="selector-class">.yml</span> getstartedlab</div></pre></td></tr></table></figure></p>
-<p>Docker会进行热升级，无需先关掉stack或者关掉任何容器。</p>
-<h3 id="u5173_u6389app_u548Cswarm"><a href="#u5173_u6389app_u548Cswarm" class="headerlink" title="关掉app和swarm"></a>关掉app和swarm</h3><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker stack rm getstartedlab</div><div class="line"><span class="variable">$ </span>docker swarm leave --force</div></pre></td></tr></table></figure>
-
+        <h2 id="2-3__u670D_u52A1"><a href="#2-3__u670D_u52A1" class="headerlink" title="2.3 服务"></a>2.3 服务</h2>
         
         
         <p class="article-more-link">
+          
+            <a href="/2018/03/12/docker-tutorial-3/#more">Read More</a>
           
        </p>
     </div>
@@ -513,42 +387,12 @@
 </header>
     <div class="article-content">
         
-        <a id="more"></a>
-<h2 id="2-2__u5BB9_u5668"><a href="#2-2__u5BB9_u5668" class="headerlink" title="2.2 容器"></a>2.2 容器</h2><h3 id="u51C6_u5907_u5DE5_u4F5C_uFF1A"><a href="#u51C6_u5907_u5DE5_u4F5C_uFF1A" class="headerlink" title="准备工作："></a>准备工作：</h3><blockquote>
-<ul>
-<li>安装Docker1.13或更高版本 </li>
-<li>阅读<a href="https://docs.docker.com/get-started/" target="_blank" rel="external">第一部分教程</a></li>
-<li>使用如下命令快速测试你的环境确保docker安装成功<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker <span class="keyword">run</span><span class="bash"> hello-world</span></div></pre></td></tr></table></figure>
-</li>
-</ul>
-</blockquote>
-<h3 id="u4ECB_u7ECD"><a href="#u4ECB_u7ECD" class="headerlink" title="介绍"></a>介绍</h3><p>教程从底层往上层的顺序学习概念，这一篇学习容器。docker官方概念的分级如下：</p>
-<blockquote>
-<ul>
-<li>Stack</li>
-<li>Services</li>
-<li>Container</li>
-</ul>
-</blockquote>
-<h3 id="u4F60_u7684_u65B0_u5F00_u53D1_u73AF_u5883"><a href="#u4F60_u7684_u65B0_u5F00_u53D1_u73AF_u5883" class="headerlink" title="你的新开发环境"></a>你的新开发环境</h3><p>使用Docker，可以抓取一个便携的Python运行时作为一个镜像，无需必要安装。你的构建包含了基础的Python镜像以及你的程序代码，保证你的应用程序、它的依赖、它的运行时，都一起搬运使用。使用Dockerfile。</p>
-<h3 id="Dockerfile"><a href="#Dockerfile" class="headerlink" title="Dockerfile"></a>Dockerfile</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Use an official Python runtime as a parent image</span></div><div class="line"><span class="keyword">FROM</span> python:<span class="number">2.7</span>-slim</div><div class="line"></div><div class="line"><span class="comment"># Set the working directory to /app</span></div><div class="line"><span class="keyword">WORKDIR</span><span class="bash"> /app</span></div><div class="line"></div><div class="line"><span class="comment"># Copy the current directory contents into the container at /app</span></div><div class="line"><span class="keyword">ADD</span><span class="bash"> . /app</span></div><div class="line"></div><div class="line"><span class="comment"># Install any needed packages specified in requirements.txt</span></div><div class="line"><span class="keyword">RUN</span><span class="bash"> pip install --trusted-host pypi.python.org -r requirements.txt</span></div><div class="line"></div><div class="line"><span class="comment"># Make port 80 available to the world outside this container</span></div><div class="line"><span class="keyword">EXPOSE</span> <span class="number">80</span></div><div class="line"></div><div class="line"><span class="comment"># Define environment variable</span></div><div class="line"><span class="keyword">ENV</span> NAME World</div><div class="line"></div><div class="line"><span class="comment"># Run app.py when the container launches</span></div><div class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">"python"</span>, <span class="string">"app.py"</span>]</span></div></pre></td></tr></table></figure>
-<p>如果应用程序在一个代理服务器之后，使用哦代理的配置如下：<br><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># Set proxy server, replace host:port with values for your servers</span></div><div class="line"><span class="keyword">ENV</span> http_proxy host:port</div><div class="line"><span class="keyword">ENV</span> https_proxy host:port</div></pre></td></tr></table></figure></p>
-<h3 id="app_u4EE3_u7801"><a href="#app_u4EE3_u7801" class="headerlink" title="app代码"></a>app代码</h3><blockquote>
-<p><code>requirements.txt</code><br><figure class="highlight ebnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="attribute">Flask</span></div><div class="line">Redis</div></pre></td></tr></table></figure></p>
-<p><code>app.py</code><br><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask</div><div class="line"><span class="keyword">from</span> redis <span class="keyword">import</span> Redis, RedisError</div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> socket</div><div class="line"></div><div class="line"><span class="comment"># Connect to Redis</span></div><div class="line">redis = Redis(host=<span class="string">"redis"</span>, db=<span class="number">0</span>, socket_connect_timeout=<span class="number">2</span>, socket_timeout=<span class="number">2</span>)</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line"></div><div class="line"><span class="meta">@app.route("/")</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">()</span>:</span></div><div class="line">    <span class="keyword">try</span>:</div><div class="line">        visits = redis.incr(<span class="string">"counter"</span>)</div><div class="line">    <span class="keyword">except</span> RedisError:</div><div class="line">        visits = <span class="string">"&lt;i&gt;cannot connect to Redis, counter disabled&lt;/i&gt;"</span></div><div class="line"></div><div class="line">    html = <span class="string">"&lt;h3&gt;Hello &#123;name&#125;!&lt;/h3&gt;"</span> \</div><div class="line">           <span class="string">"&lt;b&gt;Hostname:&lt;/b&gt; &#123;hostname&#125;&lt;br/&gt;"</span> \</div><div class="line">           <span class="string">"&lt;b&gt;Visits:&lt;/b&gt; &#123;visits&#125;"</span></div><div class="line">    <span class="keyword">return</span> html.format(name=os.getenv(<span class="string">"NAME"</span>, <span class="string">"world"</span>), hostname=socket.gethostname(), visits=visits)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</div><div class="line">    app.run(host=<span class="string">'0.0.0.0'</span>, port=<span class="number">80</span>)</div></pre></td></tr></table></figure></p>
-</blockquote>
-<h3 id="u6784_u5EFAapp"><a href="#u6784_u5EFAapp" class="headerlink" title="构建app"></a>构建app</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$ ls</div><div class="line">Dockerfile		app<span class="selector-class">.py</span>			requirements<span class="selector-class">.txt</span></div><div class="line"></div><div class="line">$ docker build -t friendlyhello .</div><div class="line"></div><div class="line">$ docker image ls</div><div class="line"></div><div class="line">REPOSITORY            TAG                 IMAGE ID</div><div class="line">friendlyhello         latest              <span class="number">326387</span>cea398</div></pre></td></tr></table></figure>
-<h3 id="u8FD0_u884Capp"><a href="#u8FD0_u884Capp" class="headerlink" title="运行app"></a>运行app</h3><figure class="highlight dts"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ docker run -p <span class="number">4000</span>:<span class="number">80</span> friendlyhello</div><div class="line"></div><div class="line">$ curl http:<span class="comment">//localhost:4000</span></div><div class="line"></div><div class="line"><span class="params">&lt;h3&gt;</span>Hello World!<span class="params">&lt;/h3&gt;</span><span class="params">&lt;b&gt;</span>Hostname:<span class="params">&lt;/b&gt;</span> <span class="number">8f</span>c990912a14<span class="params">&lt;br/&gt;</span><span class="params">&lt;b&gt;</span>Visits:<span class="params">&lt;/b&gt;</span> <span class="params">&lt;i&gt;</span>cannot connect to Redis, counter disabled<span class="params">&lt;/i&gt;</span></div><div class="line"></div><div class="line">$ docker container stop <span class="number">326387</span>cea398</div></pre></td></tr></table></figure>
-<figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">$ docker <span class="keyword">run</span><span class="bash"> <span class="_">-d</span> -p 4000:80 friendlyhello</span></div><div class="line"></div><div class="line">$ docker container ls</div><div class="line">CONTAINER ID        IMAGE               COMMAND             CREATED</div><div class="line"><span class="number">1</span>fa4ab2cf395        friendlyhello       <span class="string">"python app.py"</span>     <span class="number">28</span> seconds ago</div><div class="line"></div><div class="line">$ docker container stop <span class="number">1</span>fa4ab2cf395</div></pre></td></tr></table></figure>
-<h3 id="u5171_u4EAB_u4F60_u7684_u955C_u50CF"><a href="#u5171_u4EAB_u4F60_u7684_u955C_u50CF" class="headerlink" title="共享你的镜像"></a>共享你的镜像</h3><h4 id="u767B_u5F55_u4F60_u7684Docker_ID"><a href="#u767B_u5F55_u4F60_u7684Docker_ID" class="headerlink" title="登录你的Docker ID"></a>登录你的Docker ID</h4><p>如果没有账户，需要先在<a href="https://cloud.docker.com" target="_blank" rel="external">cloud.docker.com</a>上注册。<br><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker login</div></pre></td></tr></table></figure></p>
-<h4 id="u7ED9_u955C_u50CF_u6253_u6807_u7B7E"><a href="#u7ED9_u955C_u50CF_u6253_u6807_u7B7E" class="headerlink" title="给镜像打标签"></a>给镜像打标签</h4><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker <span class="keyword">tag</span> <span class="title">image</span> username/repository:<span class="keyword">tag</span></div></pre></td></tr></table></figure>
-<p>例如<br><figure class="highlight crmsh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker <span class="keyword">tag</span> <span class="title">friendlyhello</span> john/get-<span class="literal">started</span>:part2</div></pre></td></tr></table></figure></p>
-<h3 id="u516C_u5F00_u955C_u50CF"><a href="#u516C_u5F00_u955C_u50CF" class="headerlink" title="公开镜像"></a>公开镜像</h3><figure class="highlight armasm"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ docker <span class="keyword">push </span>username/repository:tag</div></pre></td></tr></table></figure>
-<h3 id="u4ECE_u8FDC_u7AEF_u62C9_u53D6_u5E76_u8FD0_u884C_u955C_u50CF"><a href="#u4ECE_u8FDC_u7AEF_u62C9_u53D6_u5E76_u8FD0_u884C_u955C_u50CF" class="headerlink" title="从远端拉取并运行镜像"></a>从远端拉取并运行镜像</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">docker <span class="keyword">run</span><span class="bash"> -p 4000:80 username/repository:tag</span></div></pre></td></tr></table></figure>
-
+        <h2 id="2-2__u5BB9_u5668"><a href="#2-2__u5BB9_u5668" class="headerlink" title="2.2 容器"></a>2.2 容器</h2>
         
         
         <p class="article-more-link">
+          
+            <a href="/2018/03/12/docker-tutorial-2/#more">Read More</a>
           
        </p>
     </div>
@@ -604,29 +448,12 @@
 </header>
     <div class="article-content">
         
-        <a id="more"></a>
-<h2 id="2-1__u57FA_u672C_u7ED3_u6784"><a href="#2-1__u57FA_u672C_u7ED3_u6784" class="headerlink" title="2.1 基本结构"></a>2.1 基本结构</h2><h3 id="u6982_u5FF5"><a href="#u6982_u5FF5" class="headerlink" title="概念"></a>概念</h3><p>docker是一个使用容器的平台，为开发者和系统管理员提供<strong>开发、部署、运行</strong>应用程序的便利。docker是一种容器化工具，容器化的流行得益于以下几个原因：</p>
-<blockquote>
-<ul>
-<li>灵活</li>
-<li>轻量级</li>
-<li>可交换的: 线上部署更新升级</li>
-<li>便携</li>
-<li>可扩展</li>
-<li>纵向堆叠</li>
-</ul>
-</blockquote>
-<h3 id="u955C_u50CF_u4E0E_u5BB9_u5668"><a href="#u955C_u50CF_u4E0E_u5BB9_u5668" class="headerlink" title="镜像与容器"></a>镜像与容器</h3><p><strong>镜像</strong>是一个可运行的包，包含了所有运行一个应用程序需要的东西，包括代码、运行时、库、环境变量以及配置文件。</p>
-<p><strong>容器</strong>是镜像的实例，是镜像执行时在内存中的样子，是带有状态或用户进程的镜像。</p>
-<h3 id="u955C_u50CF_u4E0E_u865A_u62DF_u673A"><a href="#u955C_u50CF_u4E0E_u865A_u62DF_u673A" class="headerlink" title="镜像与虚拟机"></a>镜像与虚拟机</h3><p><img src="/../../images/Container@2x.png" alt="Alt text"><br><img src="/../../images/VM@2x.png" alt="Alt text"></p>
-<h3 id="u51C6_u5907_u4F60_u7684Docker_u73AF_u5883"><a href="#u51C6_u5907_u4F60_u7684Docker_u73AF_u5883" class="headerlink" title="准备你的Docker环境"></a>准备你的Docker环境</h3><p>Docker for Mac版本17.12.0-ce Edge以上，Docker for Windows版本18.02.0-ce Edge以上，支持Kubernetes docker。</p>
-<h3 id="u6D4B_u8BD5Docker_08_u7248_u672C"><a href="#u6D4B_u8BD5Docker_08_u7248_u672C" class="headerlink" title="测试Docker版本"></a>测试Docker版本</h3><figure class="highlight elixir"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>docker --version</div><div class="line"><span class="variable">$ </span>docker version</div><div class="line"><span class="variable">$ </span>docker info</div></pre></td></tr></table></figure>
-<h3 id="u6D4B_u8BD5Docker_u5B89_u88C5"><a href="#u6D4B_u8BD5Docker_u5B89_u88C5" class="headerlink" title="测试Docker安装"></a>测试Docker安装</h3><figure class="highlight gams"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="symbol">$</span> docker run hello-world</div><div class="line"><span class="symbol">$</span> docker image ls</div><div class="line"><span class="symbol">$</span> docker container ls --<span class="keyword">all</span></div></pre></td></tr></table></figure>
-<h3 id="u603B_u7ED3_u548C_u79D8_u7C4D_u5217_u8868"><a href="#u603B_u7ED3_u548C_u79D8_u7C4D_u5217_u8868" class="headerlink" title="总结和秘籍列表"></a>总结和秘籍列表</h3><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">## <span class="keyword">List</span> Docker <span class="keyword">CLI</span> commands</div><div class="line">docker</div><div class="line">docker container --<span class="keyword">help</span></div><div class="line"></div><div class="line">## <span class="keyword">Display</span> Docker <span class="keyword">version</span> and info</div><div class="line">docker --<span class="keyword">version</span></div><div class="line">docker <span class="keyword">version</span></div><div class="line">docker info</div><div class="line"></div><div class="line">## Excecute Docker image</div><div class="line">docker <span class="keyword">run</span> hello-world</div><div class="line"></div><div class="line">## <span class="keyword">List</span> Docker images</div><div class="line">docker image <span class="keyword">ls</span></div><div class="line"></div><div class="line">## <span class="keyword">List</span> Docker containers (running, all, all <span class="keyword">in</span> quiet mode)</div><div class="line">docker container <span class="keyword">ls</span></div><div class="line">docker container <span class="keyword">ls</span> --all</div><div class="line">docker container <span class="keyword">ls</span> -a -<span class="built_in">q</span></div></pre></td></tr></table></figure>
-
+        <h2 id="2-1__u57FA_u672C_u7ED3_u6784"><a href="#2-1__u57FA_u672C_u7ED3_u6784" class="headerlink" title="2.1 基本结构"></a>2.1 基本结构</h2>
         
         
         <p class="article-more-link">
+          
+            <a href="/2018/03/12/docker-tutorial-1/#more">Read More</a>
           
        </p>
     </div>
@@ -886,7 +713,7 @@
 		<ul class="clearfix">
 		
 			
-				<li><a href="/tags/docker/" title="docker">docker<sup>8</sup></a></li>
+				<li><a href="/tags/docker/" title="docker">docker<sup>7</sup></a></li>
 			
 		
 			
@@ -894,7 +721,7 @@
 			
 		
 			
-				<li><a href="/tags/算法/" title="算法">算法<sup>2</sup></a></li>
+				<li><a href="/tags/算法/" title="算法">算法<sup>4</sup></a></li>
 			
 		
 			
